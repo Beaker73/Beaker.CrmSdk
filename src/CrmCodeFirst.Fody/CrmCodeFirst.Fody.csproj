@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="../Beaker.Crm.CodeFirst.props" />
+	
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FodyHelpers" Version="6.0.5" />
+	</ItemGroup>
+
+</Project>

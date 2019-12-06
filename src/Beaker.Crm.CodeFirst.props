@@ -1,0 +1,10 @@
+<Project>
+
+	<PropertyGroup>
+		<TargetFrameworks>net462</TargetFrameworks>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningsAsErrors />
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+</Project>
