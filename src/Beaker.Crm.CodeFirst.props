@@ -1,10 +1,14 @@
 <Project>
 
+	<!-- shared properties for every assembly in the project -->
 	<PropertyGroup>
 		<TargetFrameworks>net462</TargetFrameworks>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Version>0.0.1</Version>
+		<AssemblyVersion>$(Version)</AssemblyVersion>
+		<FileVersion>$(Version)</FileVersion>
 	</PropertyGroup>
 
 </Project>

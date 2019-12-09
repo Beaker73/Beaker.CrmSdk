@@ -1,4 +1,5 @@
 ﻿using Beaker.Crm.CodeFirst.Composition;
+using Beaker.Crm.CodeFirst.Composition.Attributes;
 using Microsoft.Xrm.Sdk;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace Beaker.Crm.CodeFirst.SmokeTest.Entities
 	/// <summary>
 	/// The thingy entity
 	/// </summary>
+	[Entity]
 	public sealed class Thingy
 		: CrmEntity
 	{
