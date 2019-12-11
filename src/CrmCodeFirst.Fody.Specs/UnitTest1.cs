@@ -22,12 +22,14 @@ namespace CrmCodeFirst.Fody.Specs
 		private static void CompareModules(ModuleDefinition result)
 		{
 			ModuleDefinition target = ModuleDefinition.ReadModule("CrmCodeFirst.Target.dll");
+			result.Assembly.Write("CrmCodeFirst.Result.dll");
 
 			foreach (TypeDefinition targetType in target.Types)
 			{
 				TypeDefinition resultType = result.Types.Single(rt => rt.FullName == targetType.FullName);
 				CompareTypes(resultType, targetType);
 			}
+
 		}
 
 		private static void CompareTypes(TypeDefinition resultType, TypeDefinition targetType)
@@ -41,7 +43,8 @@ namespace CrmCodeFirst.Fody.Specs
 
 		private static void CompareMethods(MethodDefinition resultMethod, MethodDefinition targetMethod)
 		{
-			resultMethod.Body.Instructions.Should().BeEquivalentTo(targetMethod.Body.Instructions);
+			resultMethod.Body.Instructions.Should().BeEquivalentTo(targetMethod.Body.Instructions,
+				because: $"method body of {targetMethod.FullName} should match the expected target");
 		}
 
 	}
