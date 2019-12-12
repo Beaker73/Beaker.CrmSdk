@@ -39,6 +39,9 @@ public sealed partial class ModuleWeaver
 					string schemaName = "my_" + property.Name;
 					string logicalName = schemaName.ToLowerInvariant();
 
+					// add attribute for logical name
+					AddAttribute(property, "Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute", logicalName);
+
 					var baseType = EnsureBaseType(property.DeclaringType, "Microsoft.Xrm.Sdk.Entity");
 					if (!(baseType is null) && property.GetMethod.IsPublic && property.SetMethod.IsPublic)
 					{
@@ -50,8 +53,9 @@ public sealed partial class ModuleWeaver
 							type.Fields.Remove(backing);
 
 							property.GetMethod.Body.Instructions.Clear();
-							property.GetMethod.Body.Variables.Add(new VariableDefinition(Import<bool>()));
-							property.GetMethod.Body.Variables.Add(new VariableDefinition(Import<string>()));
+							//property.GetMethod.Body.Variables.Add(new VariableDefinition(Import<bool>()));
+							//property.GetMethod.Body.Variables.Add(new VariableDefinition(Import<string>()));
+							AddAttribute(property.GetMethod, "System.Runtime.CompilerServices.CompilerGeneratedAttribute");
 							var processor = property.GetMethod.Body.GetILProcessor();
 
 							// get Attributes collection via Attributes property
@@ -65,7 +69,13 @@ public sealed partial class ModuleWeaver
 							var containsKey = GetMethod<bool, string>(dataCollectionType, "ContainsKey");
 							processor.Emit(OpCodes.Ldstr, logicalName); // param0: logicalName
 							processor.Emit(OpCodes.Callvirt, containsKey); // call ContainsKey
-							processor.Emit(OpCodes.Stloc_0); // var0 = bool result
+							//processor.Emit(OpCodes.Stloc_0); // var0 = bool result
+
+							// test if result is false, i.e. no key available
+							// jump to null return if so.
+							//processor.Emit(OpCodes.Ldloc_0);
+							var noValueLabel = processor.Create(OpCodes.Nop);
+							processor.Emit(OpCodes.Brfalse_S, noValueLabel);
 
 							// return value via indexer on collection
 							var getItem = GetMethod<object, string>(dataCollectionType, "get_Item");
@@ -80,20 +90,21 @@ public sealed partial class ModuleWeaver
 							//processor.Emit(OpCodes.Ldloc_1); // get return value
 							processor.Emit(OpCodes.Ret); ; // return it
 
-							//if (isRequired)
-							//{
-							//	var exType = FindType("System.Collections.Generic.KeyNotFoundException");
-							//	var exCtor = exType.Methods.Single(x => x.IsConstructor && x.Parameters.Count == 1 && x.Parameters[0].ParameterType.FullName == "System.String");
-							//	var ctor = ModuleDefinition.ImportReference(exCtor);
-							//	processor.Emit(OpCodes.Ldstr, $"The {property.Name} attribute is missing");
-							//	processor.Emit(OpCodes.Newobj, ctor);
-							//	processor.Emit(OpCodes.Throw);
-							//}
-							//else
-							//{
-							//	processor.Emit(OpCodes.Ldnull);
-							//	processor.Emit(OpCodes.Ret);
-							//}
+							// not found, throw or return null
+							processor.Append(noValueLabel);
+							if (isRequired)
+							{
+								var knfe = FindType("System.Collections.Generic.KeyNotFoundException");
+								var ctor = GetConstructor<string>(knfe);
+								processor.Emit(OpCodes.Ldstr, $"The {property.Name} attribute is missing");
+								processor.Emit(OpCodes.Newobj, ctor);
+								processor.Emit(OpCodes.Throw);
+							}
+							else
+							{
+								processor.Emit(OpCodes.Ldnull);
+								processor.Emit(OpCodes.Ret);
+							}
 
 							property.SetMethod.Body.Instructions.Clear();
 							processor = property.SetMethod.Body.GetILProcessor();

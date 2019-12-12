@@ -26,6 +26,30 @@ partial class ModuleWeaver
 		return genericType;
 	}
 
+	MethodReference GetConstructor(TypeReference type, params TypeReference[] parameterTypes)
+	{
+		var mType = ModuleDefinition.ImportReference(type);
+
+		// ensure the parameter types are imported
+		TypeDefinition[] importedParameterTypes = parameterTypes.Select(pt => ModuleDefinition.ImportReference(pt).Resolve()).ToArray();
+
+		var query = mType.Resolve().Methods
+			.Where(m => m.IsConstructor)
+			.Where(m => m.Parameters.Count == parameterTypes.Length);
+		for (int i = 0; i < parameterTypes.Length; i++)
+		{
+			int ci = i;
+			query = query.Where(m => m.Parameters[ci].ParameterType.Resolve() == importedParameterTypes[ci]);
+		}
+
+		// get the constructor and import it
+		MethodDefinition method = query.Single();
+		return ModuleDefinition.ImportReference(method);
+	}
+
+	MethodReference GetConstructor<T1>(TypeReference type)
+		=> GetConstructor(type, ModuleDefinition.ImportReference(typeof(T1)));
+
 	MethodReference GetMethod(GenericInstanceType genericType, string methodName, TypeReference returnType, params TypeReference[] parameterTypes)
 	{
 		// ensure the return and parameter types are imported
@@ -70,4 +94,35 @@ partial class ModuleWeaver
 	}
 
 	TypeReference Import<T>() => ModuleDefinition.ImportReference(typeof(T));
+
+
+
+	void AddAttributeCore(ICustomAttributeProvider attributeProvider, string attrName, TypeReference[] parameterTypes, object[] arguments)
+	{
+		// resolve attribute type name name
+		var typeDef = FindType(attrName);
+		var typeRef = ModuleDefinition.ImportReference(typeDef);
+
+		var exists = attributeProvider.CustomAttributes.SingleOrDefault(c => c.AttributeType.Resolve() == typeRef.Resolve());
+		if (!(exists is null))
+			attributeProvider.CustomAttributes.Remove(exists);
+
+
+		// create attribute via constructor
+		var ctor = GetConstructor(typeRef, parameterTypes);
+		var ca = new CustomAttribute(ctor);
+
+		if (!(parameterTypes is null))
+		{
+			for (int i = 0; i < parameterTypes.Length; i++)
+				ca.ConstructorArguments.Add(new CustomAttributeArgument(ModuleDefinition.ImportReference(parameterTypes[i]), arguments[i]));
+		}
+
+		attributeProvider.CustomAttributes.Add(ca);
+	}
+
+	void AddAttribute(ICustomAttributeProvider attributeProvider, string attrName)
+		=> AddAttributeCore(attributeProvider, attrName, new TypeReference[0], new object[0]);
+	void AddAttribute<T1>(ICustomAttributeProvider attributeProvider, string attrName, T1 arg1)
+		=> AddAttributeCore(attributeProvider, attrName, new[] { Import<T1>() }, new object[] { arg1 });
 }
