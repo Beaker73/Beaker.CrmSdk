@@ -82,20 +82,20 @@ partial class ModuleWeaver
 
 	MethodReference GetMethod<TReturn>(GenericInstanceType genericType, string methodName)
 		=> GetMethod(genericType, methodName, ModuleDefinition.ImportReference(typeof(TReturn)));
-
 	MethodReference GetMethod<TReturn, TParam1>(GenericInstanceType genericType, string methodName)
-	=> GetMethod(genericType, methodName, ModuleDefinition.ImportReference(typeof(TReturn)), ModuleDefinition.ImportReference(typeof(TParam1)));
+		=> GetMethod(genericType, methodName, ModuleDefinition.ImportReference(typeof(TReturn)), ModuleDefinition.ImportReference(typeof(TParam1)));
+	MethodReference GetMethod<TReturn, TParam1, TParam2>(GenericInstanceType genericType, string methodName)
+		=> GetMethod(genericType, methodName, ModuleDefinition.ImportReference(typeof(TReturn)), ModuleDefinition.ImportReference(typeof(TParam1)), ModuleDefinition.ImportReference(typeof(TParam2)));
 
 	bool IsSameType(GenericInstanceType genericType, TypeReference param, TypeReference expectedParam)
 	{
 		if (param.IsGenericParameter && param is GenericParameter gp)
 			return genericType.GenericArguments[gp.Position].Resolve() == expectedParam;
+		if (param is ByReferenceType br && br.ElementType.ContainsGenericParameter)
+			return IsSameType(genericType, br.ElementType, expectedParam);
+
 		return param.Resolve() == expectedParam;
 	}
-
-	TypeReference Import<T>() => ModuleDefinition.ImportReference(typeof(T));
-
-
 
 	void AddAttributeCore(ICustomAttributeProvider attributeProvider, string attrName, TypeReference[] parameterTypes, object[] arguments)
 	{
@@ -124,5 +124,5 @@ partial class ModuleWeaver
 	void AddAttribute(ICustomAttributeProvider attributeProvider, string attrName)
 		=> AddAttributeCore(attributeProvider, attrName, new TypeReference[0], new object[0]);
 	void AddAttribute<T1>(ICustomAttributeProvider attributeProvider, string attrName, T1 arg1)
-		=> AddAttributeCore(attributeProvider, attrName, new[] { Import<T1>() }, new object[] { arg1 });
+		=> AddAttributeCore(attributeProvider, attrName, new[] { ImportType<T1>() }, new object[] { arg1 });
 }

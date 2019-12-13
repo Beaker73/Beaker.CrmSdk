@@ -52,75 +52,93 @@ public sealed partial class ModuleWeaver
 						{
 							type.Fields.Remove(backing);
 
-							property.GetMethod.Body.Instructions.Clear();
-							//property.GetMethod.Body.Variables.Add(new VariableDefinition(Import<bool>()));
-							//property.GetMethod.Body.Variables.Add(new VariableDefinition(Import<string>()));
-							AddAttribute(property.GetMethod, "System.Runtime.CompilerServices.CompilerGeneratedAttribute");
-							var processor = property.GetMethod.Body.GetILProcessor();
-
-							// get Attributes collection via Attributes property
-							var attrProp = baseType.Properties.Single(p => p.Name == "Attributes");
-							var getAttrProp = ModuleDefinition.ImportReference(attrProp.GetMethod);
-							processor.Emit(OpCodes.Ldarg_0); // param0: this
-							processor.Emit(OpCodes.Call, getAttrProp); // call get_Attributes
-
-							// test if logical name exists in the attributes collection
-							var dataCollectionType = MakeGenericType<string, object>("Microsoft.Xrm.Sdk.DataCollection");
-							var containsKey = GetMethod<bool, string>(dataCollectionType, "ContainsKey");
-							processor.Emit(OpCodes.Ldstr, logicalName); // param0: logicalName
-							processor.Emit(OpCodes.Callvirt, containsKey); // call ContainsKey
-							//processor.Emit(OpCodes.Stloc_0); // var0 = bool result
-
-							// test if result is false, i.e. no key available
-							// jump to null return if so.
-							//processor.Emit(OpCodes.Ldloc_0);
-							var noValueLabel = processor.Create(OpCodes.Nop);
-							processor.Emit(OpCodes.Brfalse_S, noValueLabel);
-
-							// return value via indexer on collection
-							var getItem = GetMethod<object, string>(dataCollectionType, "get_Item");
-							processor.Emit(OpCodes.Ldarg_0);
-							processor.Emit(OpCodes.Call, getAttrProp); // call get_Attributes
-							processor.Emit(OpCodes.Ldstr, logicalName); // param0: logicalName
-							processor.Emit(OpCodes.Callvirt, getItem); // call ContainsKey
-							processor.Emit(OpCodes.Castclass, property.PropertyType);
-							//processor.Emit(OpCodes.Stloc_1); // var1 = return value
-
-							// return the return value
-							//processor.Emit(OpCodes.Ldloc_1); // get return value
-							processor.Emit(OpCodes.Ret); ; // return it
-
-							// not found, throw or return null
-							processor.Append(noValueLabel);
-							if (isRequired)
-							{
-								var knfe = FindType("System.Collections.Generic.KeyNotFoundException");
-								var ctor = GetConstructor<string>(knfe);
-								processor.Emit(OpCodes.Ldstr, $"The {property.Name} attribute is missing");
-								processor.Emit(OpCodes.Newobj, ctor);
-								processor.Emit(OpCodes.Throw);
-							}
-							else
-							{
-								processor.Emit(OpCodes.Ldnull);
-								processor.Emit(OpCodes.Ret);
-							}
-
-							property.SetMethod.Body.Instructions.Clear();
-							processor = property.SetMethod.Body.GetILProcessor();
-							processor.Emit(OpCodes.Ret);
+							RebuildGetter(baseType, property, logicalName, isRequired);
+							RebuildSetter(baseType, property, logicalName, isRequired);
 						}
 					}
-					//ApplyAttribute(property, attributeLogicalName, "bcf_", property.Name.ToLowerInvariant());
 				}
 			}
 		}
+	}
+
+	private void RebuildGetter(TypeDefinition baseType, PropertyDefinition property, string logicalName, bool isRequired)
+	{
+		property.GetMethod.Body.Instructions.Clear();
+
+		property.GetMethod.Body.Variables.Add(new VariableDefinition(ImportType<object>()));
+		property.GetMethod.Body.Variables.Add(new VariableDefinition(ImportType(property.PropertyType)));
+
+		AddAttribute(property.GetMethod, "System.Runtime.CompilerServices.CompilerGeneratedAttribute");
+		var processor = property.GetMethod.Body.GetILProcessor();
+
+		// get Attributes collection via Attributes property
+		var attrProp = baseType.Properties.Single(p => p.Name == "Attributes");
+		var getAttrProp = ModuleDefinition.ImportReference(attrProp.GetMethod);
+		processor.Emit(OpCodes.Ldarg_0); // arg 0: this
+		processor.Emit(OpCodes.Call, getAttrProp); // call get_Attributes
+
+		// try to get the value of the attribute
+		var dataCollectionType = MakeGenericType<string, object>("Microsoft.Xrm.Sdk.DataCollection");
+		var tryGetValue = GetMethod<bool, string, object>(dataCollectionType, "TryGetValue");
+		processor.Emit(OpCodes.Ldstr, logicalName); // param0: logicalName
+		processor.Emit(OpCodes.Ldloca_S, (byte)0); // ref object
+		processor.Emit(OpCodes.Callvirt, tryGetValue); // call ContainsKey(logicalname, out var0)
+		// bool existance now on stack
+
+		// nop will be target
+		// jump to that target if value on stack is  false
+		var noValueLabel = processor.Create(OpCodes.Nop);
+		processor.Emit(OpCodes.Brfalse_S, noValueLabel);
+
+		// we have a value, but is it correct type?
+		processor.Emit(OpCodes.Ldloc_0);
+		processor.Emit(OpCodes.Isinst, ImportType(property.PropertyType));
+		processor.Emit(OpCodes.Stloc_1); // var 1 = typed value
+
+		// get typed value, compare with null, null, then no value
+		processor.Emit(OpCodes.Ldloc_1); 
+		processor.Emit(OpCodes.Ldnull);
+		processor.Emit(OpCodes.Cgt_Un);
+		processor.Emit(OpCodes.Brfalse_S, noValueLabel); // wrong type, behave as if we have no value
+		
+		// correct type return it
+		processor.Emit(OpCodes.Ldloc_1);
+		processor.Emit(OpCodes.Ret);
+
+		// not found, throw or return null
+		processor.Append(noValueLabel);
+		if (isRequired)
+		{
+			var knfe = FindType("System.Collections.Generic.KeyNotFoundException");
+			var ctor = GetConstructor<string>(knfe);
+			processor.Emit(OpCodes.Ldstr, $"The {property.Name} attribute is missing");
+			processor.Emit(OpCodes.Newobj, ctor);
+			processor.Emit(OpCodes.Throw);
+		}
+		else
+		{
+			processor.Emit(OpCodes.Ldnull);
+			processor.Emit(OpCodes.Ret);
+		}
+	}
+
+	private void RebuildSetter(TypeDefinition baseType, PropertyDefinition property, string logicalName, bool isRequired)
+	{
+		property.SetMethod.Body.Instructions.Clear();
+		var processor = property.SetMethod.Body.GetILProcessor();
+		processor.Emit(OpCodes.Ret);
 	}
 
 	private TypeReference ImportType<T>()
 	{
 		return ModuleDefinition.ImportReference(typeof(T));
 	}
+
+	private TypeReference ImportType(TypeReference typeRef)
+	{
+		return ModuleDefinition.ImportReference(typeRef);
+	}
+
 
 	private TypeDefinition EnsureBaseType(TypeDefinition type, string typeName)
 	{

@@ -1,5 +1,4 @@
 ﻿using Beaker.Crm.CodeFirst.Composition.Attributes;
-
 using Microsoft.Xrm.Sdk;
 
 using System;
@@ -25,11 +24,11 @@ namespace CrmCodeFirst.Source.Entities
 			get
 			{
 				// first validate if key exists, before returning it
-				if (Attributes.ContainsKey("my_OptionalWithStringMaxLength"))
-					return (string)Attributes["my_OptionalWithStringMaxLength"];
-
-				// when key not found, return the default of null
-				return null;
+				if (Attributes.TryGetValue("my_OptionalWithStringMaxLength", out object value))
+					if (value is string typedValue)
+						return typedValue;
+				// when key not found, or wrong type, return the default
+				return default;
 			}
 			set
 			{
