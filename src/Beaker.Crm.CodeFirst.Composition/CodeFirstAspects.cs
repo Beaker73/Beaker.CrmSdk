@@ -41,10 +41,12 @@ namespace Beaker.Crm.CodeFirst.Composition
 			{
 				// null handling
 				if (untypedValue is null)
+				{
 					if (isRequired)
 						throw new NullReferenceException($"Null value found for attribute '{logicalAttributeName}' which is marked as required.");
 					else
 						return null;
+				}
 				// wrong type
 				if (!(untypedValue is TProperty typedValue))
 					throw new InvalidCastException($"Found wrongly typed value in attribute '{logicalAttributeName}'. Found '{untypedValue.GetType()}' while expecting '{typeof(TProperty)}'.");
@@ -178,10 +180,12 @@ namespace Beaker.Crm.CodeFirst.Composition
 			{
 				// null handling
 				if (untypedValue is null)
+				{
 					if (isRequired)
 						throw new NullReferenceException($"Null value found for attribute '{logicalAttributeName}' which is marked as required.");
 					else
 						return null;
+				}
 				// wrong type
 				if (!(untypedValue is TProperty typedValue))
 					throw new InvalidCastException($"Found wrongly typed value in attribute '{logicalAttributeName}'. Found '{untypedValue.GetType()}' while expecting '{typeof(TProperty)}'.");
@@ -238,8 +242,8 @@ namespace Beaker.Crm.CodeFirst.Composition
 		[SuppressMessage("Design", "CA1000:Do not declare static members on generic types", Justification = "Only called via code weaving by generated code, so nothing unclear for users")]
 		public static bool ValidateAttributes(PropertyInfo property, object value, out Exception exception)
 		{
-			var attributes = property.GetCustomAttributes().OfType<ValidationAttribute>();
-			foreach (var attribute in attributes)
+			IEnumerable<ValidationAttribute> attributes = property.GetCustomAttributes().OfType<ValidationAttribute>();
+			foreach (ValidationAttribute attribute in attributes)
 			{
 				if (!attribute.IsValid(value))
 				{

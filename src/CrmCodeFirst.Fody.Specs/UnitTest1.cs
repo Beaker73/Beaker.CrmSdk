@@ -15,13 +15,13 @@ namespace CrmCodeFirst.Fody.Specs
 		[Fact]
 		public void Test1()
 		{
-			var subject = new ModuleWeaver();
+			ModuleWeaver subject = new ModuleWeaver();
 			subject.ExecuteTestRun("CrmCodeFirst.Source.dll", runPeVerify: true, afterExecuteCallback: CompareModules);
 		}
 
 		private static void CompareModules(ModuleDefinition result)
 		{
-			ModuleDefinition target = ModuleDefinition.ReadModule("CrmCodeFirst.Target.dll");
+			//ModuleDefinition target = ModuleDefinition.ReadModule("CrmCodeFirst.Target.dll");
 			result.Assembly.Write("CrmCodeFirst.Result.dll");
 
 			//foreach (TypeDefinition targetType in target.Types)

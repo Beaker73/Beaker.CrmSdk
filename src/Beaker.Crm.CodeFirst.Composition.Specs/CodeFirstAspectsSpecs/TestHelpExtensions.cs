@@ -16,8 +16,8 @@ namespace Beaker.Crm.CodeFirst.Composition.Specs.CodeFirstAspectsSpecs
 		/// <returns>The collection as a dictionary</returns>
 		public static IDictionary<TKey, TValue> ToDictionary<TKey, TValue>(this DataCollection<TKey, TValue> collection)
 		{
-			var builder = ImmutableDictionary.CreateBuilder<TKey, TValue>();
-			foreach (var kv in collection)
+			ImmutableDictionary<TKey, TValue>.Builder builder = ImmutableDictionary.CreateBuilder<TKey, TValue>();
+			foreach (KeyValuePair<TKey, TValue> kv in collection)
 				builder.Add(kv.Key, kv.Value);
 			return builder.ToImmutable();
 		}

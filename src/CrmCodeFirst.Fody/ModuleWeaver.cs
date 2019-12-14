@@ -23,7 +23,7 @@ public sealed partial class ModuleWeaver
 	public override void Execute()
 	{
 		// ensure there is a reference to the CrmSdk assembly
-		var sdkRef = EnsureAssemblyReference("Microsoft.Xrm.Sdk", new Version(9, 0, 0, 0), new byte[] { 0x31, 0xbf, 0x38, 0x56, 0xad, 0x36, 0x4e, 0x35 });
+		AssemblyNameReference sdkRef = EnsureAssemblyReference("Microsoft.Xrm.Sdk", new Version(9, 0, 0, 0), new byte[] { 0x31, 0xbf, 0x38, 0x56, 0xad, 0x36, 0x4e, 0x35 });
 
 		_typeGetProperty = ModuleDefinition.ImportReference(FindType("System.Type")
 			.Methods
@@ -57,12 +57,12 @@ public sealed partial class ModuleWeaver
 					// add attribute for logical name
 					AddAttribute(property, "Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute", logicalName);
 
-					var baseType = EnsureBaseType(property.DeclaringType, "Microsoft.Xrm.Sdk.Entity");
+					TypeDefinition baseType = EnsureBaseType(property.DeclaringType, "Microsoft.Xrm.Sdk.Entity");
 					if (!(baseType is null) && property.GetMethod.IsPublic && property.SetMethod.IsPublic)
 					{
 						// must be auto getter setter, so lets find the matching backing field
 						// and remove it, since Attributes collection will be the backing
-						var backing = type.Fields.SingleOrDefault(fd => fd.Name == $"<{property.Name}>k__BackingField");
+						FieldDefinition backing = type.Fields.SingleOrDefault(fd => fd.Name == $"<{property.Name}>k__BackingField");
 						if (!(backing is null))
 						{
 							type.Fields.Remove(backing);
@@ -79,13 +79,13 @@ public sealed partial class ModuleWeaver
 	private void RebuildGetter(TypeDefinition entityType, PropertyDefinition property, string logicalName)
 	{
 		property.GetMethod.Body.Instructions.Clear();
-		var processor = property.GetMethod.Body.GetILProcessor();
+		ILProcessor processor = property.GetMethod.Body.GetILProcessor();
 
 		AddAttribute(property.GetMethod, "System.Runtime.CompilerServices.CompilerGeneratedAttribute");
 
-		var aspectType = MakeGenericType("Beaker.Crm.CodeFirst.Composition.CodeFirstAspect", entityType);
-		var isValueType = property.PropertyType.IsValueType;
-		var isNullable = IsNullableType(property.PropertyType, out TypeReference nonNullableValueType);
+		GenericInstanceType aspectType = MakeGenericType("Beaker.Crm.CodeFirst.Composition.CodeFirstAspect", entityType);
+		bool isValueType = property.PropertyType.IsValueType;
+		bool isNullable = IsNullableType(property.PropertyType, out TypeReference nonNullableValueType);
 
 		// this
 		processor.Emit(OpCodes.Ldarg_0);
@@ -97,8 +97,8 @@ public sealed partial class ModuleWeaver
 		// attribute name
 		processor.Emit(OpCodes.Ldstr, logicalName);
 		// call 
-		var getValueMethod = GetMethod(aspectType, $"Get{AspectTypeName(isValueType, isNullable)}Attribute");
-		var typedGetValueMethod = new GenericInstanceMethod(getValueMethod);
+		MethodReference getValueMethod = GetMethod(aspectType, $"Get{AspectTypeName(isValueType, isNullable)}Attribute");
+		GenericInstanceMethod typedGetValueMethod = new GenericInstanceMethod(getValueMethod);
 		typedGetValueMethod.GenericArguments.Add(isNullable ? nonNullableValueType : property.PropertyType);
 		processor.Emit(OpCodes.Call, typedGetValueMethod);
 		// return the result
@@ -108,13 +108,13 @@ public sealed partial class ModuleWeaver
 	private void RebuildSetter(TypeDefinition entityType, PropertyDefinition property, string logicalName)
 	{
 		property.SetMethod.Body.Instructions.Clear();
-		var processor = property.SetMethod.Body.GetILProcessor();
+		ILProcessor processor = property.SetMethod.Body.GetILProcessor();
 
 		AddAttribute(property.SetMethod, "System.Runtime.CompilerServices.CompilerGeneratedAttribute");
 
-		var aspectType = MakeGenericType("Beaker.Crm.CodeFirst.Composition.CodeFirstAspect", entityType);
-		var isValueType = property.PropertyType.IsValueType;
-		var isNullable = IsNullableType(property.PropertyType, out TypeReference nonNullableValueType);
+		GenericInstanceType aspectType = MakeGenericType("Beaker.Crm.CodeFirst.Composition.CodeFirstAspect", entityType);
+		bool isValueType = property.PropertyType.IsValueType;
+		bool isNullable = IsNullableType(property.PropertyType, out TypeReference nonNullableValueType);
 
 		// this
 		processor.Emit(OpCodes.Ldarg_0);
@@ -128,8 +128,8 @@ public sealed partial class ModuleWeaver
 		// value
 		processor.Emit(OpCodes.Ldarg_1);
 		// call 
-		var setValueMethod = GetMethod(aspectType, $"Set{AspectTypeName(isValueType, isNullable)}Attribute");
-		var typedSetValueMethod = new GenericInstanceMethod(setValueMethod);
+		MethodReference setValueMethod = GetMethod(aspectType, $"Set{AspectTypeName(isValueType, isNullable)}Attribute");
+		GenericInstanceMethod typedSetValueMethod = new GenericInstanceMethod(setValueMethod);
 		typedSetValueMethod.GenericArguments.Add(isNullable ? nonNullableValueType : property.PropertyType);
 		processor.Emit(OpCodes.Call, typedSetValueMethod);
 		// return
@@ -157,14 +157,14 @@ public sealed partial class ModuleWeaver
 		if (type.BaseType is null)
 			return null;
 
-		var baseType = type.BaseType.Resolve();
+		TypeDefinition baseType = type.BaseType.Resolve();
 		return EnsureBaseType(baseType, typeName);
 	}
 
 	private AssemblyNameReference EnsureAssemblyReference(string name, Version version, byte[] token = null)
 	{
 		// try to find all existing reference to the assembly
-		var references = ModuleDefinition.AssemblyReferences
+		List<AssemblyNameReference> references = ModuleDefinition.AssemblyReferences
 			.Where(ar => ar.Name == name)
 			.Where(ar => (token == null && ar.PublicKey == null)
 				|| (token != null && token.Equals(ar.PublicKeyToken)))
@@ -173,13 +173,15 @@ public sealed partial class ModuleWeaver
 		// none found, add it
 		if (references.Count == 0)
 		{
-			var sdkRef = new AssemblyNameReference(name, version) { PublicKeyToken = token };
+			AssemblyNameReference sdkRef = new AssemblyNameReference(name, version) { PublicKeyToken = token };
 			ModuleDefinition.AssemblyReferences.Add(sdkRef);
 			references.Add(sdkRef);
 		}
 		// multiple found, fail
 		else if (references.Count > 1)
+		{
 			throw new WeavingException($"Multipe references to the {name} assembly found");
+		}
 
 		// return the one single reference there should be now
 		return references.Single();
@@ -188,8 +190,8 @@ public sealed partial class ModuleWeaver
 	private void ApplyAttribute<TAttr>(PropertyDefinition property, params object[] args)
 		where TAttr : Attribute
 	{
-		var argTypes = args.Select(a => a.GetType()).ToArray();
-		var methodReference = ModuleDefinition.ImportReference(typeof(TAttr).GetConstructor(argTypes));
+		Type[] argTypes = args.Select(a => a.GetType()).ToArray();
+		MethodReference methodReference = ModuleDefinition.ImportReference(typeof(TAttr).GetConstructor(argTypes));
 		property.CustomAttributes.Add(new CustomAttribute(methodReference));
 	}
 

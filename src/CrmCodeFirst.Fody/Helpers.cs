@@ -28,12 +28,12 @@ partial class ModuleWeaver
 
 	MethodReference GetConstructor(TypeReference type, params TypeReference[] parameterTypes)
 	{
-		var mType = ModuleDefinition.ImportReference(type);
+		TypeReference mType = ModuleDefinition.ImportReference(type);
 
 		// ensure the parameter types are imported
 		TypeDefinition[] importedParameterTypes = parameterTypes.Select(pt => ModuleDefinition.ImportReference(pt).Resolve()).ToArray();
 
-		var query = mType.Resolve().Methods
+		IEnumerable<MethodDefinition> query = mType.Resolve().Methods
 			.Where(m => m.IsConstructor)
 			.Where(m => m.Parameters.Count == parameterTypes.Length);
 		for (int i = 0; i < parameterTypes.Length; i++)
@@ -115,17 +115,17 @@ partial class ModuleWeaver
 	void AddAttributeCore(ICustomAttributeProvider attributeProvider, string attrName, TypeReference[] parameterTypes, object[] arguments)
 	{
 		// resolve attribute type name name
-		var typeDef = FindType(attrName);
-		var typeRef = ModuleDefinition.ImportReference(typeDef);
+		TypeDefinition typeDef = FindType(attrName);
+		TypeReference typeRef = ModuleDefinition.ImportReference(typeDef);
 
-		var exists = attributeProvider.CustomAttributes.SingleOrDefault(c => c.AttributeType.Resolve() == typeRef.Resolve());
+		CustomAttribute exists = attributeProvider.CustomAttributes.SingleOrDefault(c => c.AttributeType.Resolve() == typeRef.Resolve());
 		if (!(exists is null))
 			attributeProvider.CustomAttributes.Remove(exists);
 
 
 		// create attribute via constructor
-		var ctor = GetConstructor(typeRef, parameterTypes);
-		var ca = new CustomAttribute(ctor);
+		MethodReference ctor = GetConstructor(typeRef, parameterTypes);
+		CustomAttribute ca = new CustomAttribute(ctor);
 
 		if (!(parameterTypes is null))
 		{
