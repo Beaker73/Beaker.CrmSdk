@@ -14,6 +14,9 @@ using System.Linq.Expressions;
 public sealed partial class ModuleWeaver
 	: BaseModuleWeaver
 {
+	private MethodReference _typeGetProperty;
+	private MethodReference _typeGetTypeFromHandle;
+
 	/// <summary>
 	/// Execute the weaver
 	/// </summary>
@@ -21,6 +24,19 @@ public sealed partial class ModuleWeaver
 	{
 		// ensure there is a reference to the CrmSdk assembly
 		var sdkRef = EnsureAssemblyReference("Microsoft.Xrm.Sdk", new Version(9, 0, 0, 0), new byte[] { 0x31, 0xbf, 0x38, 0x56, 0xad, 0x36, 0x4e, 0x35 });
+
+		_typeGetProperty = ModuleDefinition.ImportReference(FindType("System.Type")
+			.Methods
+			.Where(m => m.Name == "GetProperty")
+			.Where(m => m.Parameters.Count == 1)
+			.Where(m => m.Parameters[0].ParameterType.Resolve() == ImportType<string>().Resolve())
+			.Single());
+		_typeGetTypeFromHandle = ModuleDefinition.ImportReference(FindType("System.Type")
+			.Methods
+			.Where(m => m.Name == "GetTypeFromHandle")
+			.Where(m => m.Parameters.Count == 1)
+			.Where(m => m.Parameters[0].ParameterType.Resolve() == ImportType<RuntimeTypeHandle>().Resolve())
+			.Single());
 
 		//var sdk = ResolveAssembly(sdkRef.Name);
 		//if (sdk is null)
@@ -35,7 +51,6 @@ public sealed partial class ModuleWeaver
 			{
 				foreach (PropertyDefinition property in type.Properties)
 				{
-					bool isRequired = property.CustomAttributes.Any(a => a.AttributeType.FullName == "System.ComponentModel.DataAnnotations.RequiredAttribute") || property.PropertyType.IsValueType;
 					string schemaName = "my_" + property.Name;
 					string logicalName = schemaName.ToLowerInvariant();
 
@@ -52,8 +67,8 @@ public sealed partial class ModuleWeaver
 						{
 							type.Fields.Remove(backing);
 
-							RebuildGetter(baseType, property, logicalName, isRequired);
-							RebuildSetter(baseType, property, logicalName, isRequired);
+							RebuildGetter(type, property, logicalName);
+							RebuildSetter(type, property, logicalName);
 						}
 					}
 				}
@@ -61,73 +76,68 @@ public sealed partial class ModuleWeaver
 		}
 	}
 
-	private void RebuildGetter(TypeDefinition baseType, PropertyDefinition property, string logicalName, bool isRequired)
+	private void RebuildGetter(TypeDefinition entityType, PropertyDefinition property, string logicalName)
 	{
 		property.GetMethod.Body.Instructions.Clear();
-
-		property.GetMethod.Body.Variables.Add(new VariableDefinition(ImportType<object>()));
-		property.GetMethod.Body.Variables.Add(new VariableDefinition(ImportType(property.PropertyType)));
-
-		AddAttribute(property.GetMethod, "System.Runtime.CompilerServices.CompilerGeneratedAttribute");
 		var processor = property.GetMethod.Body.GetILProcessor();
 
-		// get Attributes collection via Attributes property
-		var attrProp = baseType.Properties.Single(p => p.Name == "Attributes");
-		var getAttrProp = ModuleDefinition.ImportReference(attrProp.GetMethod);
-		processor.Emit(OpCodes.Ldarg_0); // arg 0: this
-		processor.Emit(OpCodes.Call, getAttrProp); // call get_Attributes
+		AddAttribute(property.GetMethod, "System.Runtime.CompilerServices.CompilerGeneratedAttribute");
 
-		// try to get the value of the attribute
-		var dataCollectionType = MakeGenericType<string, object>("Microsoft.Xrm.Sdk.DataCollection");
-		var tryGetValue = GetMethod<bool, string, object>(dataCollectionType, "TryGetValue");
-		processor.Emit(OpCodes.Ldstr, logicalName); // param0: logicalName
-		processor.Emit(OpCodes.Ldloca_S, (byte)0); // ref object
-		processor.Emit(OpCodes.Callvirt, tryGetValue); // call ContainsKey(logicalname, out var0)
-		// bool existance now on stack
+		var aspectType = MakeGenericType("Beaker.Crm.CodeFirst.Composition.CodeFirstAspect", entityType);
+		var isValueType = property.PropertyType.IsValueType;
+		var isNullable = IsNullableType(property.PropertyType, out TypeReference nonNullableValueType);
 
-		// nop will be target
-		// jump to that target if value on stack is  false
-		var noValueLabel = processor.Create(OpCodes.Nop);
-		processor.Emit(OpCodes.Brfalse_S, noValueLabel);
-
-		// we have a value, but is it correct type?
-		processor.Emit(OpCodes.Ldloc_0);
-		processor.Emit(OpCodes.Isinst, ImportType(property.PropertyType));
-		processor.Emit(OpCodes.Stloc_1); // var 1 = typed value
-
-		// get typed value, compare with null, null, then no value
-		processor.Emit(OpCodes.Ldloc_1); 
-		processor.Emit(OpCodes.Ldnull);
-		processor.Emit(OpCodes.Cgt_Un);
-		processor.Emit(OpCodes.Brfalse_S, noValueLabel); // wrong type, behave as if we have no value
-		
-		// correct type return it
-		processor.Emit(OpCodes.Ldloc_1);
+		// this
+		processor.Emit(OpCodes.Ldarg_0);
+		// property info
+		processor.Emit(OpCodes.Ldtoken, entityType);
+		processor.Emit(OpCodes.Call, _typeGetTypeFromHandle);
+		processor.Emit(OpCodes.Ldstr, property.Name);
+		processor.Emit(OpCodes.Call, _typeGetProperty);
+		// attribute name
+		processor.Emit(OpCodes.Ldstr, logicalName);
+		// call 
+		var getValueMethod = GetMethod(aspectType, $"Get{AspectTypeName(isValueType, isNullable)}Attribute");
+		var typedGetValueMethod = new GenericInstanceMethod(getValueMethod);
+		typedGetValueMethod.GenericArguments.Add(isNullable ? nonNullableValueType : property.PropertyType);
+		processor.Emit(OpCodes.Call, typedGetValueMethod);
+		// return the result
 		processor.Emit(OpCodes.Ret);
-
-		// not found, throw or return null
-		processor.Append(noValueLabel);
-		if (isRequired)
-		{
-			var knfe = FindType("System.Collections.Generic.KeyNotFoundException");
-			var ctor = GetConstructor<string>(knfe);
-			processor.Emit(OpCodes.Ldstr, $"The {property.Name} attribute is missing");
-			processor.Emit(OpCodes.Newobj, ctor);
-			processor.Emit(OpCodes.Throw);
-		}
-		else
-		{
-			processor.Emit(OpCodes.Ldnull);
-			processor.Emit(OpCodes.Ret);
-		}
 	}
 
-	private void RebuildSetter(TypeDefinition baseType, PropertyDefinition property, string logicalName, bool isRequired)
+	private void RebuildSetter(TypeDefinition entityType, PropertyDefinition property, string logicalName)
 	{
 		property.SetMethod.Body.Instructions.Clear();
 		var processor = property.SetMethod.Body.GetILProcessor();
+
+		AddAttribute(property.SetMethod, "System.Runtime.CompilerServices.CompilerGeneratedAttribute");
+
+		var aspectType = MakeGenericType("Beaker.Crm.CodeFirst.Composition.CodeFirstAspect", entityType);
+		var isValueType = property.PropertyType.IsValueType;
+		var isNullable = IsNullableType(property.PropertyType, out TypeReference nonNullableValueType);
+
+		// this
+		processor.Emit(OpCodes.Ldarg_0);
+		// property info
+		processor.Emit(OpCodes.Ldtoken, entityType);
+		processor.Emit(OpCodes.Call, _typeGetTypeFromHandle);
+		processor.Emit(OpCodes.Ldstr, property.Name);
+		processor.Emit(OpCodes.Call, _typeGetProperty);
+		// attribute name
+		processor.Emit(OpCodes.Ldstr, logicalName);
+		// value
+		processor.Emit(OpCodes.Ldarg_1);
+		// call 
+		var setValueMethod = GetMethod(aspectType, $"Set{AspectTypeName(isValueType, isNullable)}Attribute");
+		var typedSetValueMethod = new GenericInstanceMethod(setValueMethod);
+		typedSetValueMethod.GenericArguments.Add(isNullable ? nonNullableValueType : property.PropertyType);
+		processor.Emit(OpCodes.Call, typedSetValueMethod);
+		// return
 		processor.Emit(OpCodes.Ret);
 	}
+
+	private string AspectTypeName(bool isValueType, bool isNullable)
+		=> isValueType ? (isNullable ? "NullableValueType" : "ValueType") : "ReferenceType";
 
 	private TypeReference ImportType<T>()
 	{
@@ -190,6 +200,7 @@ public sealed partial class ModuleWeaver
 	public override IEnumerable<string> GetAssembliesForScanning()
 	{
 		yield return "Microsoft.Xrm.Sdk";
+		yield return "Beaker.Crm.CodeFirst.Composition";
 		//yield return "netstandard";
 		//yield return "mscorlib";
 		//yield return "System";

@@ -1,8 +1,8 @@
-﻿using Beaker.Crm.CodeFirst.Composition.Attributes;
+﻿using Beaker.Crm.CodeFirst.Composition;
+using Beaker.Crm.CodeFirst.Composition.Attributes;
+
 using Microsoft.Xrm.Sdk;
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace CrmCodeFirst.Source.Entities
@@ -18,27 +18,11 @@ namespace CrmCodeFirst.Source.Entities
 		/// optional string value with a max length
 		/// </summary>
 		[StringLength(100)]
-		[AttributeLogicalName("my_OptionalWithStringMaxLength")]
-		public string OptionalWithStringMaxLength
+		[AttributeLogicalName("my_optionalstringwithmaxlength")]
+		public string OptionalStringWithMaxLength
 		{
-			get
-			{
-				// first validate if key exists, before returning it
-				if (Attributes.TryGetValue("my_OptionalWithStringMaxLength", out object value))
-					if (value is string typedValue)
-						return typedValue;
-				// when key not found, or wrong type, return the default
-				return default;
-			}
-			set
-			{
-				// A string length validation should be added
-				if ((value?.Length ?? 0) > 100)
-					throw new ArgumentOutOfRangeException(nameof(value), "Maximum string length is 100");
-
-				// set value
-				Attributes["my_OptionalWithStringMaxLength"] = value;
-			}
+			get => CodeFirstAspect<Thingy>.GetReferenceTypeAttribute<string>(this, typeof(Thingy).GetProperty("OptionalStringWithMaxLength"), "my_optionalstringwithmaxlength");
+			set => CodeFirstAspect<Thingy>.SetReferenceTypeAttribute<string>(this, typeof(Thingy).GetProperty("OptionalStringWithMaxLength"), "my_optionalstringwithmaxlength", value);
 		}
 
 		/// <summary>
@@ -46,30 +30,32 @@ namespace CrmCodeFirst.Source.Entities
 		/// </summary>
 		[StringLength(50)]
 		[Required]
-		public string RequiredWithStringMaxLength
+		[AttributeLogicalName("my_requiredstringwithmaxlength")]
+		public string RequiredStringWithMaxLength
 		{
-			get
-			{
-				// first validate if key exists, before returning it
-				if (Attributes.ContainsKey("my_RequiredWithStringMaxLength"))
-					return (string)Attributes["my_RequiredWithStringMaxLength"];
+			get => CodeFirstAspect<Thingy>.GetReferenceTypeAttribute<string>(this, typeof(Thingy).GetProperty("RequiredStringWithMaxLength"), "my_optionalstringwithmaxlength");
+			set => CodeFirstAspect<Thingy>.SetReferenceTypeAttribute<string>(this, typeof(Thingy).GetProperty("RequiredStringWithMaxLength"), "my_optionalstringwithmaxlength", value);
+		}
 
-				// when key not found, throw
-				throw new KeyNotFoundException("The RequiredWithStringMaxLength attribute is missing");
-			}
-			set
-			{
-				// required, so validate input value against null
-				if (value is null)
-					throw new ArgumentNullException(nameof(value), "The RequiredWithStringMaxStringLength attribute is required");
+		/// <summary>
+		/// optional integer with a range
+		/// </summary>
+		[Range(50, 100)]
+		[AttributeLogicalName("my_OptionalWithIntRange")]
+		public int? OptionalWithIntRange
+		{
+			get => CodeFirstAspect<Thingy>.GetNullableValueTypeAttribute<int>(this, typeof(Thingy).GetProperty("OptionalWithIntRange"), "my_optionalwithintrange");
+			set => CodeFirstAspect<Thingy>.SetNullableValueTypeAttribute<int>(this, typeof(Thingy).GetProperty("OptionalWithIntRange"), "my_optionalwithintrange", value);
+		}
 
-				// A string length validation should be added
-				if ((value?.Length ?? 0) > 50)
-					throw new ArgumentOutOfRangeException(nameof(value), "Maximum string length is 50");
-
-				// set value
-				Attributes["my_RequiredWithStringMaxLength"] = value;
-			}
+		/// <summary>
+		/// required integer with a range
+		/// </summary>
+		[Range(50, 100)]
+		public int RequiredWithIntRange
+		{
+			get => CodeFirstAspect<Thingy>.GetValueTypeAttribute<int>(this, typeof(Thingy).GetProperty("OptionalWithIntRange"), "my_optionalwithintrange");
+			set => CodeFirstAspect<Thingy>.SetValueTypeAttribute<int>(this, typeof(Thingy).GetProperty("OptionalWithIntRange"), "my_optionalwithintrange", value);
 		}
 	}
 }

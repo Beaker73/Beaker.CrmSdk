@@ -50,6 +50,21 @@ partial class ModuleWeaver
 	MethodReference GetConstructor<T1>(TypeReference type)
 		=> GetConstructor(type, ModuleDefinition.ImportReference(typeof(T1)));
 
+	MethodReference GetMethod(GenericInstanceType genericType, string methodName)
+	{
+		// get the method and import it
+		TypeDefinition genericDefinition = genericType.Resolve();
+		MethodDefinition method = genericDefinition.Methods.Single(m => m.Name == methodName);
+		MethodReference methodReference = ModuleDefinition.ImportReference(method);
+
+		// do not forget to set declaring type to the generic type !!!
+		// during import it is lost...
+		methodReference.DeclaringType = genericType;
+
+		// and again, import the method so it can be used.
+		return ModuleDefinition.ImportReference(methodReference);
+	}
+
 	MethodReference GetMethod(GenericInstanceType genericType, string methodName, TypeReference returnType, params TypeReference[] parameterTypes)
 	{
 		// ensure the return and parameter types are imported
@@ -125,4 +140,20 @@ partial class ModuleWeaver
 		=> AddAttributeCore(attributeProvider, attrName, new TypeReference[0], new object[0]);
 	void AddAttribute<T1>(ICustomAttributeProvider attributeProvider, string attrName, T1 arg1)
 		=> AddAttributeCore(attributeProvider, attrName, new[] { ImportType<T1>() }, new object[] { arg1 });
+
+
+	bool IsNullableType(TypeReference possibleNullableType, out TypeReference baseType)
+	{
+		if(possibleNullableType.IsGenericInstance 
+			&& possibleNullableType is GenericInstanceType git 
+			&& git.GenericArguments.Count == 1 
+			&& git.ElementType.FullName == "System.Nullable`1")
+		{
+			baseType = git.GenericArguments[0].GetElementType();
+			return true;
+		}
+
+		baseType = null;
+		return false;
+	}
 }

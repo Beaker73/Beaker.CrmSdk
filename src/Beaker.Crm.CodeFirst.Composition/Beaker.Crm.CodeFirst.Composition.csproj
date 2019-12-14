@@ -19,6 +19,10 @@
 	  <None Include="EntityReference.cs" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Reference Include="System.ComponentModel.DataAnnotations" />
+	</ItemGroup>
+
 	<Target Name="Debug" DependsOnTargets="Build">
 		<Message Text="Target: $(TargetName)" Importance="High" />
 	</Target>

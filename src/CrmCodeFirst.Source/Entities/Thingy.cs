@@ -23,5 +23,17 @@ namespace CrmCodeFirst.Source.Entities
 		[StringLength(50)]
 		[Required]
 		public string RequiredWithStringMaxLength { get; set; }
+
+		/// <summary>
+		/// optional integer with a range
+		/// </summary>
+		[Range(50, 100)]
+		public int? OptionalIntWithRange { get; set; }
+
+		/// <summary>
+		/// required integer with a range
+		/// </summary>
+		[Range(50, 100)]
+		public int RequiredIntWithRange { get; set; }
 	}
 }
