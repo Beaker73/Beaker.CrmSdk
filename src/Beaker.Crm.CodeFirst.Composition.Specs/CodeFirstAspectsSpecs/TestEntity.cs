@@ -21,6 +21,12 @@ namespace Beaker.Crm.CodeFirst.Composition.Specs.CodeFirstAspecsSpecs
 		public string RequiredString { get; set; }
 
 		/// <summary>
+		/// Property info for a string with a maximum string length applied
+		/// </summary>
+		[StringLength(40)]
+		public string StringWithLength { get; set; }
+
+		/// <summary>
 		/// Property info for a nullable integer test
 		/// </summary>
 		public int? NullableInteger { get; set; }
@@ -35,6 +41,12 @@ namespace Beaker.Crm.CodeFirst.Composition.Specs.CodeFirstAspecsSpecs
 		/// </summary>
 		[Required]
 		public int RequiredNullableInteger { get; set; }
+
+		/// <summary>
+		/// Property info for an integer with a range applied
+		/// </summary>
+		[Range(50, 100)]
+		public int RangedInteger { get; set; }
 
 	}
 }

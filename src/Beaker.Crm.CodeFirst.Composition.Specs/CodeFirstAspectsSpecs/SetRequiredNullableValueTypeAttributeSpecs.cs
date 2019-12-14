@@ -52,11 +52,10 @@ namespace Beaker.Crm.CodeFirst.Composition.Specs.CodeFirstAspectsSpecs
 		{
 			TestEntity entity = new TestEntity();
 
-			Action act  = () => CodeFirstAspect<TestEntity>.SetNullableValueTypeAttribute<int>(entity, typeof(TestEntity).GetProperty("RequiredNullableInteger"), "requirednullableinteger", null);
+			Action act = () => CodeFirstAspect<TestEntity>.SetNullableValueTypeAttribute<int>(entity, typeof(TestEntity).GetProperty("RequiredNullableInteger"), "requirednullableinteger", null);
 
 			act.Should().Throw<ArgumentNullException>(
-					because: "the aspect should store the value in the attribute collection")
-				.WithMessage("The attribute 'requirednullableinteger' is required\nParameter name: value");
+				because: "the aspect should store the value in the attribute collection");
 		}
 	}
 }

@@ -9,6 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beaker.Crm.CodeFirst.SmokeT
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C29F546A-0697-4FDD-A07A-CF973BBF27DD}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		Beaker.Crm.CodeFirst.props = Beaker.Crm.CodeFirst.props
 	EndProjectSection
 EndProject
@@ -27,7 +28,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrmCodeFirst.Source", "CrmC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrmCodeFirst.Target", "CrmCodeFirst.Target\CrmCodeFirst.Target.csproj", "{5C42E363-E4B4-49FF-9EA4-2C28B741D9A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beaker.Crm.CodeFirst.Composition.Specs", "Beaker.Crm.CodeFirst.Composition.Specs\Beaker.Crm.CodeFirst.Composition.Specs.csproj", "{1B6F0209-C2B7-4894-B518-D0A53630A737}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beaker.Crm.CodeFirst.Composition.Specs", "Beaker.Crm.CodeFirst.Composition.Specs\Beaker.Crm.CodeFirst.Composition.Specs.csproj", "{1B6F0209-C2B7-4894-B518-D0A53630A737}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
