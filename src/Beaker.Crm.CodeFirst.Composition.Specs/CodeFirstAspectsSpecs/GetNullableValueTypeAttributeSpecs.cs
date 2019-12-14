@@ -1,5 +1,7 @@
 using FluentAssertions;
+
 using System;
+
 using Xunit;
 
 namespace Beaker.Crm.CodeFirst.Composition.Specs.CodeFirstAspecsSpecs
@@ -20,7 +22,7 @@ namespace Beaker.Crm.CodeFirst.Composition.Specs.CodeFirstAspecsSpecs
 
 			int? result = CodeFirstAspect<TestEntity>.GetNullableValueTypeAttribute<int>(entity, typeof(TestEntity).GetProperty("NullableInteger"), "nullableinteger");
 
-			result.Should().Be(45, 
+			result.Should().Be(45,
 				because: "the aspect should return the value from the attribute collection");
 		}
 

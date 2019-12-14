@@ -1,6 +1,8 @@
 using FluentAssertions;
+
 using System;
 using System.Collections.Generic;
+
 using Xunit;
 
 namespace Beaker.Crm.CodeFirst.Composition.Specs.CodeFirstAspecsSpecs
@@ -21,7 +23,7 @@ namespace Beaker.Crm.CodeFirst.Composition.Specs.CodeFirstAspecsSpecs
 
 			int result = CodeFirstAspect<TestEntity>.GetValueTypeAttribute<int>(entity, typeof(TestEntity).GetProperty("Integer"), "integer");
 
-			result.Should().Be(45, 
+			result.Should().Be(45,
 				because: "the aspect should return the value from the attribute collection");
 		}
 

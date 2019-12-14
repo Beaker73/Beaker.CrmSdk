@@ -1,6 +1,8 @@
 using FluentAssertions;
+
 using System;
 using System.Collections.Generic;
+
 using Xunit;
 
 namespace Beaker.Crm.CodeFirst.Composition.Specs.CodeFirstAspecsSpecs

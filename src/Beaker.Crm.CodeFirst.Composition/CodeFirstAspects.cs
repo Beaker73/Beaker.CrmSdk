@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace Beaker.Crm.CodeFirst.Composition
@@ -21,9 +22,17 @@ namespace Beaker.Crm.CodeFirst.Composition
 		/// <param name="property">The mapped property with the validation attributes</param>
 		/// <param name="logicalAttributeName">The logical attribute name</param>
 		/// <returns>The value of the attribute</returns>
+		[SuppressMessage("Design", "CA1000:Do not declare static members on generic types", Justification = "Only called via code weaving by generated code, so nothing unclear for users")]
 		public static TProperty GetReferenceTypeAttribute<TProperty>(TEntity entity, PropertyInfo property, string logicalAttributeName)
 			where TProperty : class
 		{
+			if (entity is null)
+				throw new ArgumentNullException(nameof(entity));
+			if (property is null)
+				throw new ArgumentNullException(nameof(property));
+			if (string.IsNullOrEmpty(logicalAttributeName))
+				throw new ArgumentNullException(nameof(logicalAttributeName));
+
 			bool isRequired = !(property.GetCustomAttribute<RequiredAttribute>() is null);
 
 			// try to get the value
@@ -58,10 +67,24 @@ namespace Beaker.Crm.CodeFirst.Composition
 		/// <param name="property">The mapped property with the validation attributes</param>
 		/// <param name="logicalAttributeName">The logical attribute name</param>
 		/// <param name="value">The value to set the attribute to</param>
+		[SuppressMessage("Design", "CA1000:Do not declare static members on generic types", Justification = "Only called via code weaving by generated code, so nothing unclear for users")]
 		public static void SetReferenceTypeAttribute<TProperty>(TEntity entity, PropertyInfo property, string logicalAttributeName, TProperty value)
 			where TProperty : class
 		{
-			throw new NotImplementedException();
+			if (entity is null)
+				throw new ArgumentNullException(nameof(entity));
+			if (property is null)
+				throw new ArgumentNullException(nameof(property));
+			if (string.IsNullOrEmpty(logicalAttributeName))
+				throw new ArgumentNullException(nameof(logicalAttributeName));
+
+			bool isRequired = !(property.GetCustomAttribute<RequiredAttribute>() is null);
+
+			// if marked as required and value is null, throw
+			if (isRequired && value is null)
+				throw new ArgumentNullException(nameof(value), $"The attribute ${logicalAttributeName} is required");
+
+			entity.Attributes[logicalAttributeName] = value;
 		}
 
 		/// <summary>
@@ -72,9 +95,17 @@ namespace Beaker.Crm.CodeFirst.Composition
 		/// <param name="property">The mapped property with the validation attributes</param>
 		/// <param name="logicalAttributeName">The logical attribute name</param>
 		/// <returns>The value of the attribute</returns>
+		[SuppressMessage("Design", "CA1000:Do not declare static members on generic types", Justification = "Only called via code weaving by generated code, so nothing unclear for users")]
 		public static TProperty GetValueTypeAttribute<TProperty>(TEntity entity, PropertyInfo property, string logicalAttributeName)
 			where TProperty : struct
 		{
+			if (entity is null)
+				throw new ArgumentNullException(nameof(entity));
+			if (property is null)
+				throw new ArgumentNullException(nameof(property));
+			if (string.IsNullOrEmpty(logicalAttributeName))
+				throw new ArgumentNullException(nameof(logicalAttributeName));
+
 			// try to get the value
 			if (entity.Attributes.TryGetValue(logicalAttributeName, out object untypedValue))
 			{
@@ -100,10 +131,18 @@ namespace Beaker.Crm.CodeFirst.Composition
 		/// <param name="property">The mapped property with the validation attributes</param>
 		/// <param name="logicalAttributeName">The logical attribute name</param>
 		/// <param name="value">The value to set the attribute to</param>
+		[SuppressMessage("Design", "CA1000:Do not declare static members on generic types", Justification = "Only called via code weaving by generated code, so nothing unclear for users")]
 		public static void SetValueTypeAttribute<TProperty>(TEntity entity, PropertyInfo property, string logicalAttributeName, TProperty value)
 			where TProperty : struct
 		{
-			throw new NotImplementedException();
+			if (entity is null)
+				throw new ArgumentNullException(nameof(entity));
+			if (property is null)
+				throw new ArgumentNullException(nameof(property));
+			if (string.IsNullOrEmpty(logicalAttributeName))
+				throw new ArgumentNullException(nameof(logicalAttributeName));
+
+			entity[logicalAttributeName] = value;
 		}
 
 		/// <summary>
@@ -114,9 +153,17 @@ namespace Beaker.Crm.CodeFirst.Composition
 		/// <param name="property">The mapped property with the validation attributes</param>
 		/// <param name="logicalAttributeName">The logical attribute name</param>
 		/// <returns>The value of the attribute</returns>
+		[SuppressMessage("Design", "CA1000:Do not declare static members on generic types", Justification = "Only called via code weaving by generated code, so nothing unclear for users")]
 		public static TProperty? GetNullableValueTypeAttribute<TProperty>(TEntity entity, PropertyInfo property, string logicalAttributeName)
 			where TProperty : struct
 		{
+			if (entity is null)
+				throw new ArgumentNullException(nameof(entity));
+			if (property is null)
+				throw new ArgumentNullException(nameof(property));
+			if (string.IsNullOrEmpty(logicalAttributeName))
+				throw new ArgumentNullException(nameof(logicalAttributeName));
+
 			bool isRequired = !(property.GetCustomAttribute<RequiredAttribute>() is null);
 
 			// try to get the value
@@ -151,10 +198,24 @@ namespace Beaker.Crm.CodeFirst.Composition
 		/// <param name="property">The mapped property with the validation attributes</param>
 		/// <param name="logicalAttributeName">The logical attribute name</param>
 		/// <param name="value">The value to set the attribute to</param>
+		[SuppressMessage("Design", "CA1000:Do not declare static members on generic types", Justification = "Only called via code weaving by generated code, so nothing unclear for users")]
 		public static void SetNullableValueTypeAttribute<TProperty>(TEntity entity, PropertyInfo property, string logicalAttributeName, TProperty? value)
 			where TProperty : struct
 		{
-			throw new NotImplementedException();
+			if (entity is null)
+				throw new ArgumentNullException(nameof(entity));
+			if (property is null)
+				throw new ArgumentNullException(nameof(property));
+			if (string.IsNullOrEmpty(logicalAttributeName))
+				throw new ArgumentNullException(nameof(logicalAttributeName));
+
+			bool isRequired = !(property.GetCustomAttribute<RequiredAttribute>() is null);
+
+			// if marked as required and value is null, throw
+			if (isRequired && !value.HasValue)
+				throw new ArgumentNullException(nameof(value), $"The attribute '{logicalAttributeName}' is required");
+
+			entity.Attributes[logicalAttributeName] = value;
 		}
 	}
 }
