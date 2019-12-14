@@ -29,17 +29,22 @@ namespace Beaker.Crm.CodeFirst.Composition
 			// try to get the value
 			if (entity.Attributes.TryGetValue(logicalAttributeName, out object untypedValue))
 			{
-				// ensure correct type
-				TProperty type = untypedValue as TProperty;
+				// null handling
+				if (untypedValue is null)
+					if (isRequired)
+						throw new NullReferenceException($"Null value found for attribute '{logicalAttributeName}' which is marked as required.");
+					else
+						return null;
+				// wrong type
+				if (!(untypedValue is TProperty typedValue))
+					throw new InvalidCastException($"Found wrongly typed value in attribute '{logicalAttributeName}'. Found '{untypedValue.GetType()}' while expecting '{typeof(TProperty)}'.");
 
-				// if we have a value, return it
-				if (!(type is null))
-					return type;
+				return typedValue;
 			}
 
 			// no value, but required, throw
 			if (isRequired)
-				throw new KeyNotFoundException($"No attribute named ${logicalAttributeName} found");
+				throw new KeyNotFoundException($"No attribute named '{logicalAttributeName}' found for attribute marked as required.");
 
 			// no value, return default
 			return default;
@@ -73,13 +78,18 @@ namespace Beaker.Crm.CodeFirst.Composition
 			// try to get the value
 			if (entity.Attributes.TryGetValue(logicalAttributeName, out object untypedValue))
 			{
-				// ensure correct type
-				if (untypedValue is TProperty)
-					return (TProperty)untypedValue;
+				// null handling
+				if (untypedValue is null)
+					throw new NullReferenceException($"Null value found for attribute '{logicalAttributeName}' which is marked as required.");
+				// wrong type
+				if (!(untypedValue is TProperty typedValue))
+					throw new InvalidCastException($"Found wrongly typed value in attribute '{logicalAttributeName}'. Found '{untypedValue.GetType()}' while expecting '{typeof(TProperty)}'.");
+
+				return typedValue;
 			}
 
-			// no value, throw
-			throw new KeyNotFoundException($"No attribute named ${logicalAttributeName} found");
+			// no value, but required, throw
+			throw new KeyNotFoundException($"No attribute named '{logicalAttributeName}' found for attribute marked as required.");
 		}
 
 		/// <summary>
@@ -107,14 +117,29 @@ namespace Beaker.Crm.CodeFirst.Composition
 		public static TProperty? GetNullableValueTypeAttribute<TProperty>(TEntity entity, PropertyInfo property, string logicalAttributeName)
 			where TProperty : struct
 		{
+			bool isRequired = !(property.GetCustomAttribute<RequiredAttribute>() is null);
+
 			// try to get the value
 			if (entity.Attributes.TryGetValue(logicalAttributeName, out object untypedValue))
 			{
-				// ensure correct type
-				if (untypedValue is TProperty)
-					return (TProperty)untypedValue;
+				// null handling
+				if (untypedValue is null)
+					if (isRequired)
+						throw new NullReferenceException($"Null value found for attribute '{logicalAttributeName}' which is marked as required.");
+					else
+						return null;
+				// wrong type
+				if (!(untypedValue is TProperty typedValue))
+					throw new InvalidCastException($"Found wrongly typed value in attribute '{logicalAttributeName}'. Found '{untypedValue.GetType()}' while expecting '{typeof(TProperty)}'.");
+
+				return typedValue;
 			}
 
+			// no value, but required, throw
+			if (isRequired)
+				throw new KeyNotFoundException($"No attribute named '{logicalAttributeName}' found for attribute marked as required.");
+
+			// no value, return default
 			return default;
 		}
 
