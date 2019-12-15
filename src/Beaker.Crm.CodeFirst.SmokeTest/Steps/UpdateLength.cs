@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Beaker.Crm.CodeFirst.SmokeTest.Steps
 {
 	/// <summary>
-	/// Step that sets the <see cref="Thingy.NameLength"/> based on the <see cref="Thingy.Name"/> field.
+	/// Step that sets the <see cref="Thingy.CharactersInName"/> based on the <see cref="Thingy.Name"/> field.
 	/// </summary>
 	[Message("Create", "Update")]
 	[Target(typeof(Thingy))]
@@ -24,7 +24,7 @@ namespace Beaker.Crm.CodeFirst.SmokeTest.Steps
 		/// <param name="target">The target thingy that has been created/updated</param>
 		protected override void Execute(Thingy target)
 		{
-			target.NameLength = target.Name?.Length ?? 0;
+			target.CharactersInName = target.Name?.Length ?? 0;
 		}
 	}
 }

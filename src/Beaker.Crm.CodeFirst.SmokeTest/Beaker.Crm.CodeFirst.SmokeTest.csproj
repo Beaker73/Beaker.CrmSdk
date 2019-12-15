@@ -7,8 +7,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CrmCodeFirst.Fody" Version="0.0.1">
-		  <GeneratePathProperty>true</GeneratePathProperty>
+		<PackageReference Include="CrmCodeFirst.Fody" Version="0.0.2">
+			<GeneratePathProperty>true</GeneratePathProperty>
 		</PackageReference>
 		<PackageReference Include="Fody" Version="6.0.5">
 			<PrivateAssets>all</PrivateAssets>

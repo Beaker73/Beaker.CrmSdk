@@ -31,6 +31,6 @@ namespace Beaker.Crm.CodeFirst.SmokeTest.Entities
 		/// </summary>
 		[Range(0, Int32.MaxValue)]
 		[Description("Number of characters in the name of the thingy")]
-		public int? NameLength { get; set; }
+		public int? CharactersInName { get; set; }
 	}
 }

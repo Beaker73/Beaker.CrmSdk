@@ -12,19 +12,20 @@ namespace Beaker.Crm.CodeFirst.Composition
 		/// <summary>
 		/// The UTC Date and Time this record was created on
 		/// </summary>
-		public DateTime CreatedOn { get; set; }
+		public virtual DateTime CreatedOn { get; }
+		
 		/// <summary>
 		/// The user who created the record
 		/// </summary>
-		public EntityReference CreatedBy { get; set; }
+		public virtual EntityReference CreatedBy { get; }
 
 		/// <summary>
 		/// The UTC Date and Time this record was modified on
 		/// </summary>
-		public DateTime ModifiedOn {get; set; }
+		public virtual DateTime ModifiedOn { get; }
 		/// <summary>
 		/// The user who modified the record
 		/// </summary>
-		public EntityReference ModifiedBy { get; set; }
+		public virtual EntityReference ModifiedBy { get; }
 	}
 }

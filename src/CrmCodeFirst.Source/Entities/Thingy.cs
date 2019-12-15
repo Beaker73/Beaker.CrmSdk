@@ -1,5 +1,8 @@
-﻿using Beaker.Crm.CodeFirst.Composition.Attributes;
+﻿using Beaker.Crm.CodeFirst.Composition;
+using Beaker.Crm.CodeFirst.Composition.Attributes;
+
 using Microsoft.Xrm.Sdk;
+
 using System.ComponentModel.DataAnnotations;
 
 namespace CrmCodeFirst.Source.Entities
@@ -9,7 +12,7 @@ namespace CrmCodeFirst.Source.Entities
 	/// </summary>
 	[Entity]
 	public sealed class Thingy
-		: Entity
+		: CrmEntity
 	{
 		/// <summary>
 		/// optional string value with a max length
