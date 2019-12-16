@@ -8,5 +8,12 @@ namespace Beaker.Crm.CodeFirst.Composition.Attributes
 	public sealed class PluginAttribute
 		: ExportAttribute
 	{
+		/// <summary>
+		/// Initializes a new plugin
+		/// </summary>
+		public PluginAttribute()
+			: base(typeof(IPluginStep))
+		{
+		}
 	}
 }

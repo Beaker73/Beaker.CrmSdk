@@ -1,13 +1,11 @@
 ﻿using Beaker.Crm.CodeFirst.Composition;
 using Beaker.Crm.CodeFirst.Composition.Attributes;
+
 using Microsoft.Xrm.Sdk;
+
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Beaker.Crm.CodeFirst.SmokeTest.Entities
 {
@@ -31,6 +29,13 @@ namespace Beaker.Crm.CodeFirst.SmokeTest.Entities
 		/// </summary>
 		[Range(0, Int32.MaxValue)]
 		[Description("Number of characters in the name of the thingy")]
-		public int? CharactersInName { get; set; }
+		public int CharactersInName { get; set; }
+
+		/// <summary>
+		/// Difference between number of characters in the name between current and previous name
+		/// </summary>
+		[Range(0, Int32.MaxValue)]
+		[Description("Difference between number of characters in the name between current and previous name")]
+		public int? CharacterDifWithPreviousName { get; set; }
 	}
 }
