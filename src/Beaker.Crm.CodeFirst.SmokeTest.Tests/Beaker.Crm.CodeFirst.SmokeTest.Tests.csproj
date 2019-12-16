@@ -1,24 +1,31 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../Beaker.Crm.CodeFirst.props" />
+	<Import Project="../Beaker.Crm.CodeFirst.props" />
 
-  <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net462</TargetFramework>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="NSubstitute" Version="4.2.1" />
-    <PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Include="xunit" Version="2.4.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
-    <PackageReference Include="coverlet.collector" Version="1.0.1" />
-    <PackageReference Include="FluentAssertions" Version="5.9.0" />
-    <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.21" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="NSubstitute" Version="4.2.1" />
+		<PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+		<PackageReference Include="xunit" Version="2.4.0" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+		<PackageReference Include="coverlet.collector" Version="1.0.1" />
+		<PackageReference Include="FluentAssertions" Version="5.9.0" />
+		<PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.21" />
+		<PackageReference Include="Microsoft.CrmSdk.Workflow" Version="9.0.2.21" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Beaker.Crm.CodeFirst.SmokeTest\Beaker.Crm.CodeFirst.SmokeTest.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Beaker.Crm.CodeFirst.SmokeTest\Beaker.Crm.CodeFirst.SmokeTest.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="System.Activities" />
+		<Reference Include="System.Activities.DurableInstancing" />
+		<Reference Include="System.ServiceModel.Activities" />
+	</ItemGroup>
 
 </Project>
