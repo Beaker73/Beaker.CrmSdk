@@ -2,11 +2,10 @@
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
 
 /// <summary>
 /// Weaver entry point
@@ -45,7 +44,7 @@ public sealed partial class ModuleWeaver
 
 		foreach (TypeDefinition type in ModuleDefinition.Types)
 		{
-			bool isCodeFirstEntity = type.CustomAttributes.Any(a => a.AttributeType.FullName == "Beaker.Crm.CodeFirst.Composition.Attributes.EntityAttribute");
+			bool isCodeFirstEntity = type.CustomAttributes.Any(a => a.AttributeType.FullName == "Beaker.CrmSdk.CodeFirst.Attributes.EntityAttribute");
 
 			if (isCodeFirstEntity)
 			{
@@ -83,7 +82,7 @@ public sealed partial class ModuleWeaver
 
 		AddAttribute(property.GetMethod, "System.Runtime.CompilerServices.CompilerGeneratedAttribute");
 
-		GenericInstanceType aspectType = MakeGenericType("Beaker.Crm.CodeFirst.Composition.CodeFirstAspect", entityType);
+		GenericInstanceType aspectType = MakeGenericType("Beaker.CrmSdk.CodeFirst.CodeFirstAspect", entityType);
 		bool isValueType = property.PropertyType.IsValueType;
 		bool isNullable = IsNullableType(property.PropertyType, out TypeReference nonNullableValueType);
 
@@ -112,7 +111,7 @@ public sealed partial class ModuleWeaver
 
 		AddAttribute(property.SetMethod, "System.Runtime.CompilerServices.CompilerGeneratedAttribute");
 
-		GenericInstanceType aspectType = MakeGenericType("Beaker.Crm.CodeFirst.Composition.CodeFirstAspect", entityType);
+		GenericInstanceType aspectType = MakeGenericType("Beaker.CrmSdk.CodeFirst.CodeFirstAspect", entityType);
 		bool isValueType = property.PropertyType.IsValueType;
 		bool isNullable = IsNullableType(property.PropertyType, out TypeReference nonNullableValueType);
 
@@ -202,7 +201,7 @@ public sealed partial class ModuleWeaver
 	public override IEnumerable<string> GetAssembliesForScanning()
 	{
 		yield return "Microsoft.Xrm.Sdk";
-		yield return "Beaker.Crm.CodeFirst.Composition";
+		yield return "Beaker.CrmSdk.CodeFirst";
 		//yield return "netstandard";
 		//yield return "mscorlib";
 		//yield return "System";

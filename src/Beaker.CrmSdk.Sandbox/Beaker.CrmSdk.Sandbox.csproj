@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="../Beaker.CrmSdk.props" />
+
+	<PropertyGroup>
+		<TargetFramework>net462</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>Creates sandboxes to run crm plugins</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
+		<PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.21" />
+		<PackageReference Include="Microsoft.CrmSdk.Workflow" Version="9.0.2.21" />
+	</ItemGroup>
+
+</Project>

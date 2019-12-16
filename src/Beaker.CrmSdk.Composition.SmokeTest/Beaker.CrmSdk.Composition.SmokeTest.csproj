@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="../Beaker.CrmSdk.props" />
+
+	<PropertyGroup>
+		<TargetFramework>net462</TargetFramework>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CrmCodeFirst.Fody" Version="0.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Beaker.CrmSdk.CodeFirst.SmokeTest\Beaker.CrmSdk.CodeFirst.SmokeTest.csproj" />
+	  <ProjectReference Include="..\Beaker.CrmSdk.Composition\Beaker.CrmSdk.Composition.csproj" />
+	  <ProjectReference Include="..\CrmCodeFirst\CrmCodeFirst.csproj" />
+	</ItemGroup>
+
+</Project>

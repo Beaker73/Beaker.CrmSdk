@@ -1,6 +1,6 @@
 ﻿using Beaker.Crm.CodeFirst.Composition;
 using Beaker.Crm.CodeFirst.Composition.Attributes;
-
+using Beaker.CrmSdk.CodeFirst;
 using Microsoft.Xrm.Sdk;
 
 using System.ComponentModel.DataAnnotations;
