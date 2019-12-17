@@ -10,8 +10,6 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\Beaker.CrmSdk.CodeFirst.SmokeTest\Beaker.CrmSdk.CodeFirst.SmokeTest.csproj" />
 	  <ProjectReference Include="..\Beaker.CrmSdk.Composition\Beaker.CrmSdk.Composition.csproj" />
-	  <ProjectReference Include="..\CrmCodeFirst.Fody\CrmCodeFirst.Fody.csproj" />
-	  <ProjectReference Include="..\CrmCodeFirst\CrmCodeFirst.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -16,15 +16,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\CrmCodeFirst\CrmCodeFirst.csproj" />
+		<ProjectReference Include="..\Beaker.CrmSdk.CodeFirst\Beaker.CrmSdk.CodeFirst.csproj" />
 	</ItemGroup>
-
+	
 	<ItemGroup>
 		<Reference Include="System.ComponentModel.DataAnnotations" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<WeaverFiles Include="$(SolutionDir)CrmCodeFirst.Fody\bin\$(Configuration)\netstandard2.0\CrmCodeFirst.Fody.dll" />
+		<WeaverFiles Include="$(SolutionDir)Beaker.CrmSdk.CodeFirst.Fody\bin\$(Configuration)\netstandard2.0\Beaker.CrmSdk.CodeFirst.Fody.dll" />
 	</ItemGroup>
 
 </Project>

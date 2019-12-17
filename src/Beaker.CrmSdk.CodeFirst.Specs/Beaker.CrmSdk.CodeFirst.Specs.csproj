@@ -19,12 +19,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\CrmCodeFirst.Fody\CrmCodeFirst.Fody.csproj" />
-		<ProjectReference Include="..\CrmCodeFirst\CrmCodeFirst.csproj" />
+		<ProjectReference Include="..\Beaker.CrmSdk.CodeFirst\Beaker.CrmSdk.CodeFirst.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-				<Reference Include="System.ComponentModel.DataAnnotations" />
+		<Reference Include="System.ComponentModel.DataAnnotations" />
 	</ItemGroup>
 
 </Project>

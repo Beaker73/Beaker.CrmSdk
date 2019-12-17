@@ -21,7 +21,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Beaker.CrmSdk.CodeFirst.SmokeTest\Beaker.CrmSdk.CodeFirst.SmokeTest.csproj" />
-	  <ProjectReference Include="..\CrmCodeFirst\CrmCodeFirst.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
