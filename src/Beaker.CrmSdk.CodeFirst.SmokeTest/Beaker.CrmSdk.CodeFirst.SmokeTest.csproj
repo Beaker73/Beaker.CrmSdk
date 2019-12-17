@@ -4,26 +4,27 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net462</TargetFrameworks>
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CrmCodeFirst.Fody" Version="0.0.2">
-			<GeneratePathProperty>true</GeneratePathProperty>
-		</PackageReference>
 		<PackageReference Include="Fody" Version="6.0.5">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="3.4.0" />
 		<PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.21" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\CrmCodeFirst\CrmCodeFirst.csproj" />
+		<ProjectReference Include="..\CrmCodeFirst\CrmCodeFirst.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Reference Include="System.ComponentModel.DataAnnotations" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<WeaverFiles Include="$(SolutionDir)CrmCodeFirst.Fody\bin\$(Configuration)\netstandard2.0\CrmCodeFirst.Fody.dll" />
 	</ItemGroup>
 
 </Project>

@@ -4,6 +4,8 @@
 
 	<PropertyGroup>
 		<TargetFramework>net462</TargetFramework>
+		<DisableFody>true</DisableFody>
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>

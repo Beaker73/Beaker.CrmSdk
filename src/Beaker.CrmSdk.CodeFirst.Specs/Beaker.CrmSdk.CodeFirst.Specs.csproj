@@ -1,9 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<Import Project="../Beaker.CrmSdk.props" />
 
 	<PropertyGroup>
 		<TargetFramework>net462</TargetFramework>
+		<DisableFody>true</DisableFody>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
@@ -18,11 +19,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\CrmCodeFirst\CrmCodeFirst.csproj" />
+		<ProjectReference Include="..\CrmCodeFirst.Fody\CrmCodeFirst.Fody.csproj" />
+		<ProjectReference Include="..\CrmCodeFirst\CrmCodeFirst.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Reference Include="System.ComponentModel.DataAnnotations" />
+				<Reference Include="System.ComponentModel.DataAnnotations" />
 	</ItemGroup>
 
 </Project>

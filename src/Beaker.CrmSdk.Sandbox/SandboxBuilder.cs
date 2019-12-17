@@ -33,7 +33,7 @@ namespace Beaker.Crm.CodeFirst.SmokeTest.Tests.Builders
 				typeof(Entity).Assembly
 			};
 
-			Assembly[] visibleTo = new Assembly[0];
+			Assembly[] visibleTo = Array.Empty<Assembly>();
 
 			return new Sandbox(_pluginType ?? typeof(DummyPlugin), trusted, visibleTo);
 		}

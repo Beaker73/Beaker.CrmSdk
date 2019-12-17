@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<Import Project="../Beaker.CrmSdk.props" />
@@ -6,7 +6,6 @@
 	<PropertyGroup>
 		<TargetFrameworks>net462</TargetFrameworks>
 		<Description>Fody add-in to inject Dynamics CRM property logic into code first entities</Description>
-		<NoWarn>CS1591;NU5228</NoWarn>
 		<PackageOutputPath>$(SolutionDir)nugets</PackageOutputPath>
 	</PropertyGroup>
 

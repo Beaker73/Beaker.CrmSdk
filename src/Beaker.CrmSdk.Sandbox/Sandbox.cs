@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -55,7 +56,7 @@ namespace Beaker.Crm.CodeFirst.SmokeTest.Tests.Builders
 		private AppDomainSetup CreateAppDomainSetup()
 		{
 			AppDomainSetup setup = new AppDomainSetup();
-			setup.ApplicationBase = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("n"));
+			setup.ApplicationBase = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("n", CultureInfo.InvariantCulture));
 			setup.PartialTrustVisibleAssemblies = _visibleToAssemblies.Select(CreateAssemblyName).ToArray();
 			return setup;
 		}
@@ -65,14 +66,14 @@ namespace Beaker.Crm.CodeFirst.SmokeTest.Tests.Builders
 		/// </summary>
 		/// <param name="assembly">The assembly to create a strong name for.</param>
 		/// <returns>The strong name for the requested assembly.</returns>
-		private StrongName CreateStrongName(Assembly assembly)
+		private static StrongName CreateStrongName(Assembly assembly)
 		{
 			AssemblyName assemblyName = assembly.GetName();
 			StrongNamePublicKeyBlob blob = new StrongNamePublicKeyBlob(assemblyName.GetPublicKey());
 			return new StrongName(blob, assemblyName.Name, assemblyName.Version);
 		}
 
-		private string CreateAssemblyName(Assembly assembly)
+		private static string CreateAssemblyName(Assembly assembly)
 		{
 			StrongName strongName = CreateStrongName(assembly);
 			AssemblyName assemblyName = assembly.GetName();
@@ -83,7 +84,7 @@ namespace Beaker.Crm.CodeFirst.SmokeTest.Tests.Builders
 		/// Creates a permission set that should match what Dynamics CRM Plugins receive (basic execute rights and web access except localhost)
 		/// </summary>
 		/// <returns>The created permission set</returns>
-		private PermissionSet CreatePermissionSet()
+		private static PermissionSet CreatePermissionSet()
 		{
 			PermissionSet permissions = new PermissionSet(PermissionState.None);
 			permissions.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));

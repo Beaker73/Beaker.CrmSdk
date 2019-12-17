@@ -4,6 +4,8 @@
 
 	<PropertyGroup>
 		<TargetFramework>net462</TargetFramework>
+		<DisableFody>true</DisableFody>
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -19,6 +21,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Beaker.CrmSdk.CodeFirst.SmokeTest\Beaker.CrmSdk.CodeFirst.SmokeTest.csproj" />
+	  <ProjectReference Include="..\CrmCodeFirst\CrmCodeFirst.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

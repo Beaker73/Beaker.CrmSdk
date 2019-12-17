@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project>
+
+	<Target Name="CollectCrmSolutionFiles" AfterTargets="Compile">
+		<Message Text="Compile" Importance="High" />
+	</Target>
+
+	<Target Name="PackCrmSolutionFiles" AfterTargets="Pack">
+		<Message Text="Pack" Importance="High" />
+	</Target>
+
+</Project>
