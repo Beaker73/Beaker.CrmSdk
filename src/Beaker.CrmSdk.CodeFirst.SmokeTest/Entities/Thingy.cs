@@ -1,5 +1,5 @@
-﻿using Beaker.Crm.CodeFirst.Composition;
-using Beaker.Crm.CodeFirst.Composition.Attributes;
+﻿using Beaker.CrmSdk.Composition;
+using Beaker.CrmSdk.Composition.Attributes;
 
 using Microsoft.Xrm.Sdk;
 
@@ -7,7 +7,7 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Beaker.Crm.CodeFirst.SmokeTest.Entities
+namespace Beaker.CrmSdk.CodeFirst.SmokeTest.Entities
 {
 	/// <summary>
 	/// The thingy entity

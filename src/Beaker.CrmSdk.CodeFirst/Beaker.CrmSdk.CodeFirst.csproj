@@ -6,7 +6,8 @@
 	<PropertyGroup>
 		<TargetFrameworks>net462</TargetFrameworks>
 		<Description>Fody add-in to inject Dynamics CRM property logic into code first entities</Description>
-		<PackageOutputPath>$(SolutionDir)nugets</PackageOutputPath>
+		<!--<PackageOutputPath>$(SolutionDir)nugets</PackageOutputPath>-->
+		<PackageTags>ILWeaving, Fody, Cecil, AOP, Dynamics, Crm, CrmSdk, CodeFirst</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

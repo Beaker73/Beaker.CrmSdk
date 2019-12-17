@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xrm.Sdk;
 using System;
 
-namespace Beaker.Crm.CodeFirst.Composition
+namespace Beaker.CrmSdk.CodeFirst
 {
 	/// <summary>
 	/// Based class for code first entities that also need to access the default CRM attributes

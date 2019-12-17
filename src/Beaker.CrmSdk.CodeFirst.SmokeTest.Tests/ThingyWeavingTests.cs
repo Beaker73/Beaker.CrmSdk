@@ -1,10 +1,10 @@
-using Beaker.Crm.CodeFirst.SmokeTest.Entities;
+using Beaker.CrmSdk.CodeFirst.SmokeTest.Entities;
 using FluentAssertions;
 using System;
 using System.Reflection;
 using Xunit;
 
-namespace Beaker.Crm.CodeFirst.SmokeTest.Tests
+namespace Beaker.CrmSdk.CodeFirst.SmokeTest.Tests
 {
 	/// <summary>
 	/// Test that thingy has been weaved correctly

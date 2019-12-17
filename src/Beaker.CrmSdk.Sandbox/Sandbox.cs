@@ -14,7 +14,7 @@ using System.Text.RegularExpressions;
 
 using static System.FormattableString;
 
-namespace Beaker.Crm.CodeFirst.SmokeTest.Tests.Builders
+namespace Beaker.CrmSdk.CodeFirst.SmokeTest.Tests.Builders
 {
 	/// <summary>
 	/// Creates a sandbox to run code in

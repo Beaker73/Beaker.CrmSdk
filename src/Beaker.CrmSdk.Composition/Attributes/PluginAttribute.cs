@@ -1,6 +1,6 @@
 ﻿using System.Composition;
 
-namespace Beaker.Crm.CodeFirst.Composition.Attributes
+namespace Beaker.CrmSdk.Composition.Attributes
 {
 	/// <summary>
 	/// Attribute to export the Plugin

@@ -1,7 +1,7 @@
-﻿using Beaker.Crm.CodeFirst.Composition;
-using Beaker.Crm.CodeFirst.Composition.Attributes;
+﻿using Beaker.CrmSdk.Composition;
+using Beaker.CrmSdk.Composition.Attributes;
 
-namespace Beaker.Crm.CodeFirst.SmokeTest
+namespace Beaker.CrmSdk.CodeFirst.SmokeTest
 {
 	/// <summary>
 	/// Test Plugin

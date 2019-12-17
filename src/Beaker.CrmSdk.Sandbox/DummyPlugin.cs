@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xrm.Sdk;
 using System;
 
-namespace Beaker.Crm.CodeFirst.SmokeTest.Tests.Builders
+namespace Beaker.CrmSdk.CodeFirst.SmokeTest.Tests.Builders
 {
 	/// <summary>
 	/// Dummy plugin in case user did not configure an entry point

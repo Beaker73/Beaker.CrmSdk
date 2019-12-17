@@ -1,6 +1,6 @@
 using System;
 
-namespace Beaker.Crm.CodeFirst.Composition.Attributes
+namespace Beaker.CrmSdk.Composition.Attributes
 {
 	/// <summary>
 	///     Applies the executing stage to the step. If this attribute is ommited the step defaults to PostOperation (40)

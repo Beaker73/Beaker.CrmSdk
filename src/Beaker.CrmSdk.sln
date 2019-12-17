@@ -16,6 +16,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beaker.CrmSdk.Composition.Specs", "Beaker.CrmSdk.Composition.Specs\Beaker.CrmSdk.Composition.Specs.csproj", "{7B716BAE-4707-424D-ACD5-4BD33F900181}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beaker.CrmSdk.CodeFirst.SmokeTest", "Beaker.CrmSdk.CodeFirst.SmokeTest\Beaker.CrmSdk.CodeFirst.SmokeTest.csproj", "{D5BD79D9-FF05-4C11-AFD8-7F9CBC40A2C1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2FD936C0-72EA-4128-9600-4864BDDBDC29} = {2FD936C0-72EA-4128-9600-4864BDDBDC29}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beaker.CrmSdk.CodeFirst.SmokeTest.Tests", "Beaker.CrmSdk.CodeFirst.SmokeTest.Tests\Beaker.CrmSdk.CodeFirst.SmokeTest.Tests.csproj", "{2332CCC9-6E64-4463-9A3C-B60AD8C66934}"
 EndProject
@@ -24,6 +27,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beaker.CrmSdk.CodeFirst.Specs", "Beaker.CrmSdk.CodeFirst.Specs\Beaker.CrmSdk.CodeFirst.Specs.csproj", "{C90FF5DD-7DE0-437A-8525-6B86FA16F2F8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beaker.CrmSdk.Composition.SmokeTest", "Beaker.CrmSdk.Composition.SmokeTest\Beaker.CrmSdk.Composition.SmokeTest.csproj", "{997F91A7-0778-4234-BB4D-BE5565FC450E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{785F8D06-8A24-48B2-BB29-9C792019FC46} = {785F8D06-8A24-48B2-BB29-9C792019FC46}
+		{2FD936C0-72EA-4128-9600-4864BDDBDC29} = {2FD936C0-72EA-4128-9600-4864BDDBDC29}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Composition", "Composition", "{15AA74D2-A759-41AE-930A-B56A3A433853}"
 EndProject
@@ -34,6 +41,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beaker.CrmSdk.Solution.SmokeTest", "Beaker.CrmSdk.Solution.SmokeTest\Beaker.CrmSdk.Solution.SmokeTest.csproj", "{27060869-4B36-4425-8C73-15DFAACDB9BA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beaker.CrmSdk.CodeFirst", "Beaker.CrmSdk.CodeFirst\Beaker.CrmSdk.CodeFirst.csproj", "{785F8D06-8A24-48B2-BB29-9C792019FC46}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2FD936C0-72EA-4128-9600-4864BDDBDC29} = {2FD936C0-72EA-4128-9600-4864BDDBDC29}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beaker.CrmSdk.CodeFirst.Fody", "Beaker.CrmSdk.CodeFirst.Fody\Beaker.CrmSdk.CodeFirst.Fody.csproj", "{2FD936C0-72EA-4128-9600-4864BDDBDC29}"
 EndProject

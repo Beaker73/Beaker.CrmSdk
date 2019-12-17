@@ -3,7 +3,7 @@
 using System;
 using System.Reflection;
 
-namespace Beaker.Crm.CodeFirst.SmokeTest.Tests.Builders
+namespace Beaker.CrmSdk.CodeFirst.SmokeTest.Tests.Builders
 {
 	/// <summary>
 	/// Builds a sandbox so plugin steps can be tested using the same restrictions as real sandboxes

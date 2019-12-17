@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Beaker.Crm.CodeFirst.Composition
+namespace Beaker.Crm.Composition
 {
 	/// <summary>
 	/// Typed reference to an entity

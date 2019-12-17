@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xrm.Sdk;
 using System;
 
-namespace Beaker.Crm.CodeFirst.Composition.Attributes
+namespace Beaker.CrmSdk.Composition.Attributes
 {
 	/// <summary>
 	/// Attribute to mark the type of target entity to handle

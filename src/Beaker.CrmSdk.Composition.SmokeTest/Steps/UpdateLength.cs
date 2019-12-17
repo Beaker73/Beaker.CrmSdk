@@ -1,9 +1,9 @@
-﻿using Beaker.Crm.CodeFirst.Composition;
-using Beaker.Crm.CodeFirst.Composition.Attributes;
-using Beaker.Crm.CodeFirst.SmokeTest.Entities;
+﻿using Beaker.CrmSdk.Composition;
+using Beaker.CrmSdk.Composition.Attributes;
+using Beaker.CrmSdk.CodeFirst.SmokeTest.Entities;
 using System;
 
-namespace Beaker.Crm.CodeFirst.SmokeTest.Steps
+namespace Beaker.CrmSdk.SmokeTest.Steps
 {
 	/// <summary>
 	/// Step that sets the <see cref="Thingy.CharactersInName"/> based on the <see cref="Thingy.Name"/> field.

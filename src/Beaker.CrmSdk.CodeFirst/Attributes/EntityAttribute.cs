@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Beaker.Crm.CodeFirst.Composition.Attributes
+namespace Beaker.CrmSdk.Composition.Attributes
 {
 	/// <summary>
 	/// Mark the entity as code first and to be exported to CRM

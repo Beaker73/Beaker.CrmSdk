@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 
-namespace Beaker.Crm.CodeFirst.Composition.Attributes
+namespace Beaker.CrmSdk.Composition.Attributes
 {
 	/// <summary>
 	/// Marks the fields the plugin step shoud filter on

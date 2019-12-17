@@ -1,4 +1,4 @@
-﻿namespace Beaker.Crm.CodeFirst.SmokeTest.Tests.Builders
+﻿namespace Beaker.CrmSdk.CodeFirst.SmokeTest.Tests.Builders
 {
 	/// <summary>
 	/// Interface to run the code in the sandbox

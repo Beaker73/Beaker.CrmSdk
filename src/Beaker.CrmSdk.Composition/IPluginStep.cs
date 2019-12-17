@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xrm.Sdk;
 
-namespace Beaker.Crm.CodeFirst.Composition
+namespace Beaker.CrmSdk.Composition
 {
 	/// <summary>
 	///		Step to be executed as a plugin inside CRM

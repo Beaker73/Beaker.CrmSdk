@@ -1,8 +1,8 @@
-﻿using Beaker.Crm.CodeFirst.SmokeTest.Tests.Builders;
+﻿using Beaker.CrmSdk.CodeFirst.SmokeTest.Tests.Builders;
 
 using Xunit;
 
-namespace Beaker.Crm.CodeFirst.SmokeTest.Tests
+namespace Beaker.CrmSdk.CodeFirst.SmokeTest.Tests
 {
 	/// <summary>
 	/// Tests the sandbox builder

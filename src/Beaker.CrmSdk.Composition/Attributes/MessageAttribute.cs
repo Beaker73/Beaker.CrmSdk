@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Composition;
 
-namespace Beaker.Crm.CodeFirst.Composition.Attributes
+namespace Beaker.CrmSdk.Composition.Attributes
 {
 	/// <summary>
 	/// Exports the class as a step that handles the provided messages

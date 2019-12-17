@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Beaker.Crm.CodeFirst.Composition
+namespace Beaker.CrmSdk.Composition
 {
 	/// <summary>
 	/// Base class for plugins that will use Composition via MEF

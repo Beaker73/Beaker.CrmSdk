@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xrm.Sdk;
 
-namespace Beaker.Crm.CodeFirst.Composition
+namespace Beaker.CrmSdk.Composition
 {
 	/// <summary>
 	///		Base class for a plugin step that handles the target <typeparamref name="TEntity"/>

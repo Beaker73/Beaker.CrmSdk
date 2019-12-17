@@ -1,4 +1,4 @@
-﻿namespace Beaker.Crm.CodeFirst.Composition.Attributes
+﻿namespace Beaker.CrmSdk.Composition.Attributes
 {
 	/// <summary>
 	///     Stage a plugin can execute during
