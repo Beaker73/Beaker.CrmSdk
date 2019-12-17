@@ -7,7 +7,7 @@ namespace Beaker.CrmSdk.CodeFirst.Specs.CodeFirstAspecsSpecs
 	/// <summary>
 	/// Test entity withy properties to get property info from
 	/// </summary>
-	sealed class TestEntity
+	internal sealed class TestEntity
 		: Entity
 	{
 		/// <summary>

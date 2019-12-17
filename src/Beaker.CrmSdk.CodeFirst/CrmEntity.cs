@@ -13,7 +13,7 @@ namespace Beaker.Crm.CodeFirst.Composition
 		/// The UTC Date and Time this record was created on
 		/// </summary>
 		public virtual DateTime CreatedOn { get; }
-		
+
 		/// <summary>
 		/// The user who created the record
 		/// </summary>

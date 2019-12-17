@@ -1,5 +1,4 @@
 ﻿using Beaker.CrmSdk.CodeFirst.Specs.CodeFirstAspecsSpecs;
-using Beaker.CrmSdk.CodeFirst;
 using FluentAssertions;
 using System;
 using Xunit;

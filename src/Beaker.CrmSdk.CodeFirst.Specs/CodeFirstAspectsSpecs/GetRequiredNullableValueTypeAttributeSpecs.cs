@@ -1,5 +1,3 @@
-using Beaker.CrmSdk.CodeFirst;
-
 using FluentAssertions;
 
 using System;

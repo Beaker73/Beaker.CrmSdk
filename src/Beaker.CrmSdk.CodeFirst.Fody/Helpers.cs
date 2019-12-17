@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-partial class ModuleWeaver
+public partial class ModuleWeaver
 {
-	GenericInstanceType MakeGenericType<T1>(string typeName)
+	private GenericInstanceType MakeGenericType<T1>(string typeName)
 		=> MakeGenericType(typeName, ModuleDefinition.ImportReference(typeof(T1)));
-	GenericInstanceType MakeGenericType<T1, T2>(string typeName)
+	private GenericInstanceType MakeGenericType<T1, T2>(string typeName)
 		=> MakeGenericType(typeName, ModuleDefinition.ImportReference(typeof(T1)), ModuleDefinition.ImportReference(typeof(T2)));
 
-	GenericInstanceType MakeGenericType(string typeName, params TypeReference[] genericArguments)
+	private GenericInstanceType MakeGenericType(string typeName, params TypeReference[] genericArguments)
 	{
 		// find the generic type name
 		int argCount = genericArguments.Length;
@@ -26,7 +26,7 @@ partial class ModuleWeaver
 		return genericType;
 	}
 
-	MethodReference GetConstructor(TypeReference type, params TypeReference[] parameterTypes)
+	private MethodReference GetConstructor(TypeReference type, params TypeReference[] parameterTypes)
 	{
 		TypeReference mType = ModuleDefinition.ImportReference(type);
 
@@ -47,10 +47,10 @@ partial class ModuleWeaver
 		return ModuleDefinition.ImportReference(method);
 	}
 
-	MethodReference GetConstructor<T1>(TypeReference type)
+	private MethodReference GetConstructor<T1>(TypeReference type)
 		=> GetConstructor(type, ModuleDefinition.ImportReference(typeof(T1)));
 
-	MethodReference GetMethod(GenericInstanceType genericType, string methodName)
+	private MethodReference GetMethod(GenericInstanceType genericType, string methodName)
 	{
 		// get the method and import it
 		TypeDefinition genericDefinition = genericType.Resolve();
@@ -65,7 +65,7 @@ partial class ModuleWeaver
 		return ModuleDefinition.ImportReference(methodReference);
 	}
 
-	MethodReference GetMethod(GenericInstanceType genericType, string methodName, TypeReference returnType, params TypeReference[] parameterTypes)
+	private MethodReference GetMethod(GenericInstanceType genericType, string methodName, TypeReference returnType, params TypeReference[] parameterTypes)
 	{
 		// ensure the return and parameter types are imported
 		TypeDefinition retType = ModuleDefinition.ImportReference(returnType).Resolve();
@@ -95,14 +95,14 @@ partial class ModuleWeaver
 		return ModuleDefinition.ImportReference(methodReference);
 	}
 
-	MethodReference GetMethod<TReturn>(GenericInstanceType genericType, string methodName)
+	private MethodReference GetMethod<TReturn>(GenericInstanceType genericType, string methodName)
 		=> GetMethod(genericType, methodName, ModuleDefinition.ImportReference(typeof(TReturn)));
-	MethodReference GetMethod<TReturn, TParam1>(GenericInstanceType genericType, string methodName)
+	private MethodReference GetMethod<TReturn, TParam1>(GenericInstanceType genericType, string methodName)
 		=> GetMethod(genericType, methodName, ModuleDefinition.ImportReference(typeof(TReturn)), ModuleDefinition.ImportReference(typeof(TParam1)));
-	MethodReference GetMethod<TReturn, TParam1, TParam2>(GenericInstanceType genericType, string methodName)
+	private MethodReference GetMethod<TReturn, TParam1, TParam2>(GenericInstanceType genericType, string methodName)
 		=> GetMethod(genericType, methodName, ModuleDefinition.ImportReference(typeof(TReturn)), ModuleDefinition.ImportReference(typeof(TParam1)), ModuleDefinition.ImportReference(typeof(TParam2)));
 
-	bool IsSameType(GenericInstanceType genericType, TypeReference param, TypeReference expectedParam)
+	private bool IsSameType(GenericInstanceType genericType, TypeReference param, TypeReference expectedParam)
 	{
 		if (param.IsGenericParameter && param is GenericParameter gp)
 			return genericType.GenericArguments[gp.Position].Resolve() == expectedParam;
@@ -112,7 +112,7 @@ partial class ModuleWeaver
 		return param.Resolve() == expectedParam;
 	}
 
-	void AddAttributeCore(ICustomAttributeProvider attributeProvider, string attrName, TypeReference[] parameterTypes, object[] arguments)
+	private void AddAttributeCore(ICustomAttributeProvider attributeProvider, string attrName, TypeReference[] parameterTypes, object[] arguments)
 	{
 		// resolve attribute type name name
 		TypeDefinition typeDef = FindType(attrName);
@@ -136,17 +136,16 @@ partial class ModuleWeaver
 		attributeProvider.CustomAttributes.Add(ca);
 	}
 
-	void AddAttribute(ICustomAttributeProvider attributeProvider, string attrName)
+	private void AddAttribute(ICustomAttributeProvider attributeProvider, string attrName)
 		=> AddAttributeCore(attributeProvider, attrName, new TypeReference[0], new object[0]);
-	void AddAttribute<T1>(ICustomAttributeProvider attributeProvider, string attrName, T1 arg1)
+	private void AddAttribute<T1>(ICustomAttributeProvider attributeProvider, string attrName, T1 arg1)
 		=> AddAttributeCore(attributeProvider, attrName, new[] { ImportType<T1>() }, new object[] { arg1 });
 
-
-	bool IsNullableType(TypeReference possibleNullableType, out TypeReference baseType)
+	private bool IsNullableType(TypeReference possibleNullableType, out TypeReference baseType)
 	{
-		if(possibleNullableType.IsGenericInstance 
-			&& possibleNullableType is GenericInstanceType git 
-			&& git.GenericArguments.Count == 1 
+		if (possibleNullableType.IsGenericInstance
+			&& possibleNullableType is GenericInstanceType git
+			&& git.GenericArguments.Count == 1
 			&& git.ElementType.FullName == "System.Nullable`1")
 		{
 			baseType = git.GenericArguments[0].GetElementType();

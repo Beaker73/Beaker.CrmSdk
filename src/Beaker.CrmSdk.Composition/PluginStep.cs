@@ -13,7 +13,7 @@ namespace Beaker.Crm.CodeFirst.Composition
 		{
 			if (!context.InputParameters.TryGetValue("Target", out object target) || !(target is Entity))
 				throw new InvalidPluginExecutionException(OperationStatus.Failed, "Plugin executed without target entity, while plugin expects one.");
-			if(!(target is TEntity targetEntity))
+			if (!(target is TEntity targetEntity))
 				throw new InvalidPluginExecutionException(OperationStatus.Failed, "Plugin executed with target entity of an unexpected type.");
 
 			Execute(targetEntity);
