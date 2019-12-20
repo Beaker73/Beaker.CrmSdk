@@ -1,4 +1,5 @@
-﻿using Fody;
+﻿using Beaker.CrmSdk.CodeFirst.Fody;
+using Fody;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -29,13 +30,13 @@ public sealed partial class ModuleWeaver
 			.Where(m => m.Name == "GetProperty")
 			.Where(m => m.Parameters.Count == 1)
 			.Where(m => m.Parameters[0].ParameterType.Resolve() == ImportType<string>().Resolve())
-			.Single());
+			.SingleOrException($"GetProperty could not be found on System.Typ"));
 		_typeGetTypeFromHandle = ModuleDefinition.ImportReference(FindType("System.Type")
 			.Methods
 			.Where(m => m.Name == "GetTypeFromHandle")
 			.Where(m => m.Parameters.Count == 1)
 			.Where(m => m.Parameters[0].ParameterType.Resolve() == ImportType<RuntimeTypeHandle>().Resolve())
-			.Single());
+			.SingleOrException($"GetTypeFromHandle could not be found on System.Type"));
 
 		//var sdk = ResolveAssembly(sdkRef.Name);
 		//if (sdk is null)
@@ -183,7 +184,7 @@ public sealed partial class ModuleWeaver
 		}
 
 		// return the one single reference there should be now
-		return references.Single();
+		return references.SingleOrException($"Assembly named {name} could not be found");
 	}
 
 	private void ApplyAttribute<TAttr>(PropertyDefinition property, params object[] args)

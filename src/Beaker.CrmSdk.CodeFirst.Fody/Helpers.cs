@@ -1,4 +1,5 @@
-﻿using Mono.Cecil;
+﻿using Beaker.CrmSdk.CodeFirst.Fody;
+using Mono.Cecil;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -43,7 +44,7 @@ public partial class ModuleWeaver
 		}
 
 		// get the constructor and import it
-		MethodDefinition method = query.Single();
+		MethodDefinition method = query.SingleOrException($"Constructor for type ${type.FullName} with parameters of type ${string.Join("; ", parameterTypes.Select(t => t.FullName))} could not be found.");
 		return ModuleDefinition.ImportReference(method);
 	}
 
@@ -54,7 +55,7 @@ public partial class ModuleWeaver
 	{
 		// get the method and import it
 		TypeDefinition genericDefinition = genericType.Resolve();
-		MethodDefinition method = genericDefinition.Methods.Single(m => m.Name == methodName);
+		MethodDefinition method = genericDefinition.Methods.SingleOrException(m => m.Name == methodName, $"Method named ${methodName} could not be found.");
 		MethodReference methodReference = ModuleDefinition.ImportReference(method);
 
 		// do not forget to set declaring type to the generic type !!!
@@ -84,7 +85,7 @@ public partial class ModuleWeaver
 		}
 
 		// get the method and import it
-		MethodDefinition method = query.Single();
+		MethodDefinition method = query.SingleOrException($"Method named {methodName} could not be found");
 		MethodReference methodReference = ModuleDefinition.ImportReference(method);
 
 		// do not forget to set declaring type to the generic type !!!
