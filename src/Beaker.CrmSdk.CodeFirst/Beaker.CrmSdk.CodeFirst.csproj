@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="../Beaker.CrmSdk.props" />
+
+	<PropertyGroup>
+		<TargetFrameworks>net462</TargetFrameworks>
+		<Description>Fody add-in to inject Dynamics CRM property logic into code first entities</Description>
+		<!--<PackageOutputPath>$(SolutionDir)nugets</PackageOutputPath>-->
+		<PackageTags>ILWeaving, Fody, Cecil, AOP, Dynamics, Crm, CrmSdk, CodeFirst</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Fody" Version="6.0.5" PrivateAssets="none" />
+		<PackageReference Include="FodyPackaging" Version="6.0.5" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.21" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="System.ComponentModel.DataAnnotations" />
+	</ItemGroup>
+
+</Project>

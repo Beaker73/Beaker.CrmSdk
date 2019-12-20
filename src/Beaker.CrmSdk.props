@@ -1,0 +1,16 @@
+<Project>
+
+	<!-- shared properties for every assembly in the project -->
+	<PropertyGroup>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningsAsErrors />
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Version>0.0.2</Version>
+		<AssemblyVersion>$(Version)</AssemblyVersion>
+		<FileVersion>$(Version)</FileVersion>
+		<Authors>Jeroen Smits</Authors>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\Beaker.CrmSdk.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
+
+</Project>

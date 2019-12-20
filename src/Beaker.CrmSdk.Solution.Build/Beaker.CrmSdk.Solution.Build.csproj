@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="../Beaker.CrmSdk.props" />
+
+	<PropertyGroup>
+		<TargetFramework>net462</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>Generates a CRM Solution during build</Description>
+	</PropertyGroup>
+
+</Project>

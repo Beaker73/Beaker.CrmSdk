@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="../Beaker.CrmSdk.props" />
+
+	<PropertyGroup>
+		<TargetFrameworks>net462</TargetFrameworks>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Fody" Version="6.0.5">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.21" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Beaker.CrmSdk.CodeFirst\Beaker.CrmSdk.CodeFirst.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Reference Include="System.ComponentModel.DataAnnotations" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<WeaverFiles Include="$(SolutionDir)Beaker.CrmSdk.CodeFirst.Fody\bin\$(Configuration)\netstandard2.0\Beaker.CrmSdk.CodeFirst.Fody.dll" />
+	</ItemGroup>
+
+</Project>

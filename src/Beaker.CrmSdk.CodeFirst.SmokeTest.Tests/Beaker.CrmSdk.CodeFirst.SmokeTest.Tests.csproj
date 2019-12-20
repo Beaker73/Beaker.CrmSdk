@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="../Beaker.CrmSdk.props" />
+
+	<PropertyGroup>
+		<TargetFramework>net462</TargetFramework>
+		<DisableFody>true</DisableFody>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
+		<PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.21" />
+		<PackageReference Include="Microsoft.CrmSdk.Workflow" Version="9.0.2.21" />
+		<PackageReference Include="FluentAssertions" Version="5.9.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+		<PackageReference Include="xunit" Version="2.4.0" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+		<PackageReference Include="coverlet.collector" Version="1.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Beaker.CrmSdk.CodeFirst.SmokeTest\Beaker.CrmSdk.CodeFirst.SmokeTest.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="System.Activities" />
+		<Reference Include="System.Activities.DurableInstancing" />
+		<Reference Include="System.ServiceModel.Activities" />
+	</ItemGroup>
+
+</Project>

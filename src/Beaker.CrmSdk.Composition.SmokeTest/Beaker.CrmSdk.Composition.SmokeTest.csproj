@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="../Beaker.CrmSdk.props" />
+
+	<PropertyGroup>
+		<TargetFramework>net462</TargetFramework>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Beaker.CrmSdk.CodeFirst.SmokeTest\Beaker.CrmSdk.CodeFirst.SmokeTest.csproj" />
+	  <ProjectReference Include="..\Beaker.CrmSdk.Composition\Beaker.CrmSdk.Composition.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<WeaverFiles Include="$(SolutionDir)CrmCodeFirst.Fody\bin\$(Configuration)\netstandard2.0\CrmCodeFirst.Fody.dll" />
+	</ItemGroup>
+
+</Project>
