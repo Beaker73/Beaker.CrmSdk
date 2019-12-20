@@ -1,5 +1,4 @@
-﻿using Beaker.CrmSdk.Composition;
-using Beaker.CrmSdk.Composition.Attributes;
+﻿using Beaker.CrmSdk.CodeFirst.Attributes;
 
 using Microsoft.Xrm.Sdk;
 
