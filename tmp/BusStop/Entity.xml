@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Entity>
+  <Name>bkr_BusStop</Name>
+  <EntityInfo>
+    <entity Name="bkr_BusStop">
+      <attributes>
+        <attribute PhysicalName="bkr_Name" />
+      </attributes>
+    </entity>
+  </EntityInfo>
+</Entity>

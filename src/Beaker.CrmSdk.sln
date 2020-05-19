@@ -50,6 +50,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beaker.CrmSdk.CodeFirst.Fody", "Beaker.CrmSdk.CodeFirst.Fody\Beaker.CrmSdk.CodeFirst.Fody.csproj", "{2FD936C0-72EA-4128-9600-4864BDDBDC29}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beaker.CrmSdk.CodeFirst.GenerateEntity", "Beaker.CrmSdk.CodeFirst.GenerateEntity\Beaker.CrmSdk.CodeFirst.GenerateEntity.csproj", "{A74930C2-BD42-434C-BE2A-EE7E9E23AF5A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D5BD79D9-FF05-4C11-AFD8-7F9CBC40A2C1} = {D5BD79D9-FF05-4C11-AFD8-7F9CBC40A2C1}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

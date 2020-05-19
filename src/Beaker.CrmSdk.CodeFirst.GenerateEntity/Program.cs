@@ -1,13 +1,14 @@
 ﻿using Beaker.CrmSdk.CodeFirst.Attributes;
 
 using CommandLine;
+
 using Microsoft.Xrm.Sdk;
+
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Web.UI.WebControls;
-using System.Xml;
 using System.Xml.Linq;
 
 namespace Beaker.CrmSdk.CodeFirst.GenerateEntity
@@ -44,60 +45,55 @@ namespace Beaker.CrmSdk.CodeFirst.GenerateEntity
 
 		private static void Reflect(CommandLineArguments args, Assembly reflectionAssembly)
 		{
-			var entities =
+			if (!reflectionAssembly.TryGetAttributeData<PublisherAttribute>(out CustomAttributeData data)
+				|| !data.TryGetParameterValue("customizationPrefix", out string customizationPrefix))
+				customizationPrefix = "new";
+
+			IEnumerable<Type> entityTypes =
 				from type in reflectionAssembly.GetTypes()
 				where type.IsClass && !type.IsAbstract
 				let attr = type.GetCustomAttributesData().FirstOrDefault(cad => cad.AttributeType.FullName == typeof(EntityAttribute).FullName)
 				where !(attr is null)
-				select new { type, attr };
+				select type;
 
-			foreach (var entity in entities)
-				GenerateEntity(args, entity.type, entity.attr);
-		}
+			foreach (Type type in entityTypes)
+				generateEntity(type);
 
-		private static void GenerateEntity(CommandLineArguments args, Type type, CustomAttributeData entityAttribute)
-		{
-			string schemaName = type.Name;
-			string displayName = entityAttribute.NamedArguments
-				.Select(na => (CustomAttributeNamedArgument?)na)
-				.FirstOrDefault(na => na.Value.MemberName == "DisplayName")?.TypedValue.Value as string 
-				?? schemaName;
+			void generateEntity(Type type)
+			{
+				Entity entity = new Entity(customizationPrefix + "_" + type.Name);
 
-			XDocument xml = new XDocument(
-				new XElement("Entity",
-					new XElement("Name",
-						new XAttribute("LocalizedName", displayName),
-						new XAttribute("OriginalName", displayName),
-						new XText(schemaName)
-					),
-					new XElement("entity",
-						new XAttribute("Name", schemaName)
-					)
-				));
+				if (type.TryGetDescription(out string entityDescription))
+					entity.Description = entityDescription;
 
-			// loop over all the properties to generate fields
-			var properties =
-				from property in type.GetProperties()
-				where property.CanRead
-				let attr = type.GetCustomAttributesData().FirstOrDefault(cad => cad.AttributeType.FullName == typeof(AttributeLogicalNameAttribute).FullName)
-				where !(attr is null)
-				select new { property, attr };
+				// loop over all the properties to generate fields
+				IEnumerable<PropertyInfo> properties =
+					from property in type.GetProperties()
+					where property.CanRead && property.TryGetAttributeData<AttributeLogicalNameAttribute>(out CustomAttributeData _)
+					select property;
 
-			foreach (var property in properties)
-				GeneratedField(args, type, property.property, property.attr);
+				foreach (PropertyInfo property in properties)
+					generateField(property);
 
-			// create sub folder, if not there yet
-			string folderPath = Path.Combine(args.DestinationPath, type.Name);
-			if (!Directory.Exists(folderPath))
-				Directory.CreateDirectory(folderPath);
+				// create sub folder, if not there yet
+				string folderPath = Path.Combine(args.DestinationPath, type.Name);
+				if (!Directory.Exists(folderPath))
+					Directory.CreateDirectory(folderPath);
 
-			// generate the final entity xml
-			xml.Save(Path.Combine(args.DestinationPath, type.Name, "Entity.xml"));
-		}
+				// generate the final entity xml
+				XDocument xml = new XDocument(entity.ToXml());
+				xml.Save(Path.Combine(args.DestinationPath, type.Name, "Entity.xml"));
 
-		private static void GeneratedField(CommandLineArguments args, Type type, PropertyInfo property, CustomAttributeData propertyAttribute)
-		{
+				void generateField(PropertyInfo property)
+				{
+					Attribute attribute = new Attribute(customizationPrefix + "_" + property.Name);
 
+					if (property.TryGetDescription(out string attributeDescription))
+						attribute.Description = attributeDescription;
+
+					entity.Attributes.Add(attribute);
+				}
+			}
 		}
 	}
 }

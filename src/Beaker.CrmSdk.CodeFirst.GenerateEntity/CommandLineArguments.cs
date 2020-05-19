@@ -17,7 +17,7 @@ namespace Beaker.CrmSdk.CodeFirst.GenerateEntity
 		/// <param name="destinationPath">The destination path to generate to</param>
 		public CommandLineArguments(IEnumerable<string> assemblyPaths, string destinationPath)
 		{
-			AssemblyPaths = assemblyPaths.ToImmutableList();
+			AssemblyPaths = assemblyPaths?.ToImmutableList() ?? ImmutableList<string>.Empty;
 			DestinationPath = destinationPath;
 		}
 

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Entity>
+  <Name>bkr_Thingy</Name>
+  <EntityInfo>
+    <entity Name="bkr_Thingy">
+      <attributes>
+        <attribute PhysicalName="bkr_Name" />
+        <attribute PhysicalName="bkr_CharactersInName" />
+        <attribute PhysicalName="bkr_CharacterDifWithPreviousName" />
+      </attributes>
+    </entity>
+  </EntityInfo>
+</Entity>

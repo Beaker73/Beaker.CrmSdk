@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Entity>
+  <Name>bkr_BusMessage</Name>
+  <EntityInfo>
+    <entity Name="bkr_BusMessage">
+      <attributes />
+    </entity>
+  </EntityInfo>
+</Entity>
